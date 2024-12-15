@@ -1,99 +1,134 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Project Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This README provides instructions on setting up and running the project using two different methods.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Method 1: Local Setup
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Project Setup
 
-## Project setup
+Install project dependencies:
 
 ```bash
 $ npm install
 ```
 
-## Compile and run the project
+### Create Environment Variable
+
+Copy the example environment variable file and configure it:
 
 ```bash
-# development
+$ cp .env.example .env
+```
+
+### Compile and Run the Project
+
+Run the application using one of the following modes:
+
+```bash
+# Development mode
 $ npm run start
 
-# watch mode
+# Watch mode (auto-reloads on file changes)
 $ npm run start:dev
 
-# production mode
+# Production mode
 $ npm run start:prod
 ```
 
-## Run tests
+---
+
+## Method 2: Using Docker and Makefile
+
+For Docker users, the project includes a `Makefile` to simplify API calls and container management.
+
+### Prerequisites
+
+Ensure the following are installed:
+
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+### Commands Overview
+
+#### Build and Start the Application
+
+To build and start the Docker container:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ make start
 ```
 
-## Deployment
+#### Stop the Application
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+To stop and remove the running Docker container:
 
 ```bash
-$ npm install -g mau
-$ mau deploy
+$ make stop
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+### API Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+The `Makefile` provides predefined commands to call specific API endpoints.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+#### Base API URL
 
-## Support
+The base URL for the API is defined in the `Makefile`:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```text
+http://localhost:5000/api
+```
 
-## Stay in touch
+#### Supported Endpoints
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **Daily Uptime Statistics**: `/daily-uptime-statictis`
+- **Daily Reward Statistics**: `/daily-reward-stats`
+- **Delegation Statistics**: `/get-delegation-stats`
 
-## License
+#### Call API Commands
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+To call an API endpoint, use one of the following commands:
+
+- **Daily Uptime Statistics**:
+
+  ```bash
+  $ make call-daily-uptime
+  ```
+
+- **Daily Reward Statistics**:
+
+  ```bash
+  $ make call-daily-reward
+  ```
+
+- **Delegation Statistics**:
+  ```bash
+  $ make call-delegation-stats
+  ```
+
+---
+
+## Makefile Commands
+
+Here’s a summary of the `Makefile` commands:
+
+| Command                      | Description                          |
+| ---------------------------- | ------------------------------------ |
+| `make build`                 | Build the Docker container           |
+| `make start`                 | Build and start the application      |
+| `make stop`                  | Stop and remove the Docker container |
+| `make call-daily-uptime`     | Call the Daily Uptime Statistics API |
+| `make call-daily-reward`     | Call the Daily Reward Statistics API |
+| `make call-delegation-stats` | Call the Delegation Statistics API   |
+
+---
+
+## Notes
+
+- Make sure the environment variables in `.env` are configured correctly before starting the project.
+- The `Makefile` commands assume that the API endpoints are available on the base URL `http://localhost:5000/api`.
+
+For further assistance, please refer to the project documentation or contact the development team.

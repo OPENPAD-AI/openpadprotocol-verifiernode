@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import Web3 from 'web3';
 import { ConfigService } from '@nestjs/config';
 import { Network, ProjectType } from 'src/utils/constant';
@@ -23,26 +23,9 @@ export class Web3Service {
         '0x' + privateKey,
       ).address;
     }
-    const verifierAddress =
-      await this.apiService.getVerifierByAddress(privateKeyAddress);
-    return {
-      claimer,
-      commission,
-      privateKey,
-      verifierAddress,
-      privateKeyAddress,
-    };
-  }
-  async getAddressHolder() {
-    const claimer = this.configService.get<string>('CLAIMER_ADDRESS');
-    const commission = +this.configService.get<string>('COMMISSION_RATE') || 5;
-    const privateKey = this.configService.get<string>('PRIVATE_KEY');
-    let privateKeyAddress = '';
-    if (!privateKey.startsWith('0x')) {
-      privateKeyAddress = this.web3.eth.accounts.privateKeyToAccount(
-        '0x' + privateKey,
-      ).address;
-    }
+    console.log('- claimer: ', claimer);
+    console.log('- commission: ', commission);
+    console.log('- privateKeyAddress: ', privateKeyAddress);
 
     return {
       claimer,
@@ -51,16 +34,47 @@ export class Web3Service {
       privateKeyAddress,
     };
   }
+  async getVerifierAddress(privateKeyAddress: string) {
+    const verifierAddress =
+      await this.apiService.getVerifierByAddress(privateKeyAddress);
+    return verifierAddress;
+  }
+  async getNetWork() {
+    const network = process.env.NETWORK_ARBITRUM
+      ? Network.ARBITRUM_SEPOLIA
+      : Network.ARBITRUM_MAINNET;
+    const web3 = this.getWeb3(network);
+
+    const SMCContractAbi = JSON.parse(
+      JSON.stringify(this.configService.get<string>('SmcContractAbi')),
+    );
+    const SMCContract = new web3.eth.Contract(
+      SMCContractAbi,
+      this.configService.get<string>('ADDRESS_ARBITRUM_SMC_OPERATION'),
+    );
+
+    const contractAddress = this.configService.get<string>(
+      'ADDRESS_ARBITRUM_SMC_OPERATION',
+    );
+    return {
+      contractAddress,
+      SMCContract,
+      web3,
+    };
+  }
+
   async onStart() {
     try {
       this.logger.log('Web3Service initialized.');
-      const { privateKey, verifierAddress, privateKeyAddress } =
-        await this.getPrivateKey();
+      const { privateKey, privateKeyAddress } = await this.getPrivateKey();
+      const verifierAddress = await this.getVerifierAddress(privateKeyAddress);
+      console.log('- verifierAddress: ', verifierAddress);
       const nfts = await this.apiService.getNft(privateKeyAddress);
       if (nfts && nfts.length > 0) {
         if (verifierAddress) {
           await this.apiService.setupNode();
           const nftIds = nfts.map((item) => item.tokenId);
+
           const verifierSignature =
             await this.apiService.getVerifierSignatureNodeEnter(
               verifierAddress,
@@ -107,22 +121,7 @@ export class Web3Service {
   ) {
     try {
       // Select the network based on environment variable
-      const network = process.env.NETWORK_ARBITRUM
-        ? Network.ARBITRUM_SEPOLIA
-        : Network.ARBITRUM_MAINNET;
-      const web3 = this.getWeb3(network);
-
-      const SMCContractAbi = JSON.parse(
-        JSON.stringify(this.configService.get<string>('SmcContractAbi')),
-      );
-      const SMCContract = new web3.eth.Contract(
-        SMCContractAbi,
-        this.configService.get<string>('ADDRESS_ARBITRUM_SMC_OPERATION'),
-      );
-
-      const contractAddress = this.configService.get<string>(
-        'ADDRESS_ARBITRUM_SMC_OPERATION',
-      );
+      const { contractAddress, SMCContract, web3 } = await this.getNetWork();
       const nodeInfos = await SMCContract.methods
         .nodeInfos(verifierAddress)
         .call();
@@ -167,8 +166,8 @@ export class Web3Service {
         gasPrice: currentGasPrice,
         data: encodeMuticall.encodeABI(),
       };
-      // const reason = await web3.eth.call(tx).catch((error) => error.message);
-      // console.error('Revert Reason:', reason);
+      const reason = await web3.eth.call(tx).catch((error) => error.message);
+      console.error('Revert Reason:', reason);
       const estimatedGas = await web3.eth.estimateGas(tx);
       tx.gas = Math.round(Number(estimatedGas) * 1.2);
 
@@ -190,18 +189,7 @@ export class Web3Service {
 
   async getNodeInfos(verifierAddress: string): Promise<any> {
     try {
-      const network = process.env.NETWORK_ARBITRUM
-        ? Network.ARBITRUM_SEPOLIA
-        : Network.ARBITRUM_MAINNET;
-      const web3 = this.getWeb3(network);
-
-      const SMCContractAbi = JSON.parse(
-        JSON.stringify(this.configService.get<string>('SmcContractAbi')),
-      );
-      const SMCContract = new web3.eth.Contract(
-        SMCContractAbi,
-        this.configService.get<string>('ADDRESS_ARBITRUM_SMC_OPERATION'),
-      );
+      const { SMCContract } = await this.getNetWork();
 
       const delegationWeights = BigInt(
         await SMCContract.methods.delegationWeights(verifierAddress).call(),
@@ -292,22 +280,8 @@ export class Web3Service {
     verifierAddress: string,
     nftIds: string[],
   ) {
-    const network = process.env.NETWORK_ARBITRUM
-      ? Network.ARBITRUM_SEPOLIA
-      : Network.ARBITRUM_MAINNET;
-    const web3 = this.getWeb3(network);
+    const { contractAddress, SMCContract, web3 } = await this.getNetWork();
 
-    const SMCContractAbi = JSON.parse(
-      JSON.stringify(this.configService.get<string>('SmcContractAbi')),
-    );
-    const SMCContract = new web3.eth.Contract(
-      SMCContractAbi,
-      this.configService.get<string>('ADDRESS_ARBITRUM_SMC_OPERATION'),
-    );
-
-    const contractAddress = this.configService.get<string>(
-      'ADDRESS_ARBITRUM_SMC_OPERATION',
-    );
     const nodeInfos = await SMCContract.methods
       .nodeInfos(verifierAddress)
       .call();
@@ -356,8 +330,8 @@ export class Web3Service {
   }
   async nodeExit() {
     try {
-      const { privateKey, verifierAddress, privateKeyAddress } =
-        await this.getPrivateKey();
+      const { privateKey, privateKeyAddress } = await this.getPrivateKey();
+      const verifierAddress = await this.getVerifierAddress(privateKeyAddress);
       if (verifierAddress) {
         const verifierSignature =
           await this.apiService.getVerifierSignatureNodeExit(verifierAddress);
@@ -380,22 +354,8 @@ export class Web3Service {
     verifierAddress: string,
   ) {
     try {
-      const network = process.env.NETWORK_ARBITRUM
-        ? Network.ARBITRUM_SEPOLIA
-        : Network.ARBITRUM_MAINNET;
-      const web3 = this.getWeb3(network);
+      const { contractAddress, SMCContract, web3 } = await this.getNetWork();
 
-      const SMCContractAbi = JSON.parse(
-        JSON.stringify(this.configService.get<string>('SmcContractAbi')),
-      );
-      const SMCContract = new web3.eth.Contract(
-        SMCContractAbi,
-        this.configService.get<string>('ADDRESS_ARBITRUM_SMC_OPERATION'),
-      );
-
-      const contractAddress = this.configService.get<string>(
-        'ADDRESS_ARBITRUM_SMC_OPERATION',
-      );
       const nodeInfos = await SMCContract.methods
         .nodeInfos(verifierAddress)
         .call();

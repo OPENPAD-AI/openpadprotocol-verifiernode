@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: openpadprotocol-verifiernode
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    environment:
+      NODE_ENV: production
+      PRIVATE_KEY: 'a5173d5eae835f1af8724819420677ae0a494dc26bb8a1fd374c1df01bdcb3ab'
+      COMMISSION_RATE: 10
+      URL_API_OPENPAD: https://dev-api.openpad.io/api
+      ADDRESS_ARBITRUM_SMC_OPERATION: '0x01815b1ee68ECe80ca493372b1E9Dc3B039aE87C'
+      NETWORK_ARBITRUM: test

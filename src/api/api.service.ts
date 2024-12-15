@@ -19,8 +19,9 @@ export class ApiService {
   }
   async getDelegationStats() {
     try {
-      const { verifierAddress, privateKeyAddress } =
-        await this.web3Service.getPrivateKey();
+      const { privateKeyAddress } = await this.web3Service.getPrivateKey();
+      const verifierAddress =
+        await this.getVerifierByAddress(privateKeyAddress);
       const response = await axios.get(
         `${process.env.URL_API_OPENPAD}/node-ai-vps/delegation-stats?address=${privateKeyAddress}&verifierAddress=${verifierAddress}`,
       );
@@ -33,9 +34,13 @@ export class ApiService {
 
   async getVerifierByAddress(userAddress: string) {
     try {
+      console.log(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/get-verifier-by-address?address=${userAddress}`,
+      );
       const response = await axios.get(
         `${process.env.URL_API_OPENPAD}/node-ai-vps/get-verifier-by-address?address=${userAddress}`,
       );
+
       return response.data.verifierAddress;
     } catch (error) {
       this.logger.error(error);
@@ -66,7 +71,9 @@ export class ApiService {
   }
   async dailyUptimeStatictis() {
     try {
-      const { verifierAddress } = await this.web3Service.getPrivateKey();
+      const { privateKeyAddress } = await this.web3Service.getPrivateKey();
+      const verifierAddress =
+        await this.getVerifierByAddress(privateKeyAddress);
       const response = await axios.get(
         `${process.env.URL_API_OPENPAD}/node-ai-vps/daily-uptime-statictis?verifierAddress=${verifierAddress}`,
       );
@@ -78,7 +85,7 @@ export class ApiService {
   }
   async dailyRewardStats() {
     try {
-      const { privateKeyAddress } = await this.web3Service.getAddressHolder();
+      const { privateKeyAddress } = await this.web3Service.getPrivateKey();
       const response = await axios.get(
         `${process.env.URL_API_OPENPAD}/node-ai-vps/daily-reward-stats?address=${privateKeyAddress}`,
       );
@@ -102,8 +109,10 @@ export class ApiService {
 
   async setupNode() {
     try {
-      const { verifierAddress, privateKeyAddress, commission, claimer } =
+      const { privateKeyAddress, commission, claimer } =
         await this.web3Service.getPrivateKey();
+      const verifierAddress =
+        await this.getVerifierByAddress(privateKeyAddress);
       const response = await axios.post(
         `${process.env.URL_API_OPENPAD}/node-ai-vps/create-setup`,
         {
