@@ -1,12 +1,28 @@
 import { Web3Service } from './web3.service';
-import { forwardRef, Module } from '@nestjs/common';
+import {
+  forwardRef,
+  Module,
+  OnApplicationShutdown,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ApiModule } from 'src/api/api.module';
-import { ApiService } from 'src/api/api.service';
+import { ApiController } from './api.controller';
 
 @Module({
   imports: [ConfigModule],
-  providers: [Web3Service, ApiService],
+  controllers: [ApiController],
+  providers: [Web3Service],
   exports: [Web3Service],
 })
-export class Web3Module {}
+export class Web3Module implements OnModuleInit, OnApplicationShutdown {
+  constructor(private readonly web3Service: Web3Service) {}
+
+  async onModuleInit() {
+    console.log('AppModule has been initialized');
+    await this.web3Service.onStart();
+  }
+  async onApplicationShutdown(signal?: string) {
+    console.log(`ApiModule is shutting down! Signal: ${signal}`);
+    await this.web3Service.undelegate();
+  }
+}

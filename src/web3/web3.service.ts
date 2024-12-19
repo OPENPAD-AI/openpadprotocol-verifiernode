@@ -2,41 +2,48 @@ import { Injectable, Logger } from '@nestjs/common';
 import Web3 from 'web3';
 import { ConfigService } from '@nestjs/config';
 import { Network, ProjectType } from 'src/utils/constant';
-import { ApiService } from 'src/api/api.service';
+import { Cron } from '@nestjs/schedule';
+import axios from 'axios';
 
 @Injectable()
 export class Web3Service {
   private readonly logger = new Logger(Web3Service.name);
   public web3 = new Web3();
-
-  constructor(
-    private configService: ConfigService,
-    private readonly apiService: ApiService,
-  ) {}
-  async getPrivateKey() {
-    const claimer = this.configService.get<string>('CLAIMER_ADDRESS');
-    const commission = +this.configService.get<string>('COMMISSION_RATE') || 5;
-    const privateKey = this.configService.get<string>('PRIVATE_KEY');
-    let privateKeyAddress = '';
-    if (!privateKey.startsWith('0x')) {
-      privateKeyAddress = this.web3.eth.accounts.privateKeyToAccount(
-        '0x' + privateKey,
-      ).address;
+  public static initialized = false;
+  public static claimer = '';
+  public static commission = 5;
+  public static privateKey = '';
+  public static privateKeyAddress = '';
+  public static verifierAddress = '';
+  constructor(private configService: ConfigService) {
+    if (!Web3Service.initialized) {
+      this.getPrivateKey().then(() => {
+        Web3Service.initialized = true;
+      });
     }
-    console.log('- claimer: ', claimer);
-    console.log('- commission: ', commission);
-    console.log('- privateKeyAddress: ', privateKeyAddress);
+  }
+  async getPrivateKey() {
+    Web3Service.claimer = this.configService.get<string>('CLAIMER_ADDRESS');
+    Web3Service.commission =
+      +this.configService.get<string>('COMMISSION_RATE') || 5;
+    Web3Service.privateKey = this.configService.get<string>('PRIVATE_KEY');
+    if (!Web3Service.privateKey.startsWith('0x')) {
+      Web3Service.privateKeyAddress =
+        this.web3.eth.accounts.privateKeyToAccount(
+          '0x' + Web3Service.privateKey,
+        ).address;
 
-    return {
-      claimer,
-      commission,
-      privateKey,
-      privateKeyAddress,
-    };
+      Web3Service.verifierAddress = await this.getVerifierAddress(
+        Web3Service.privateKeyAddress,
+      );
+    }
+    console.log('- claimer: ', Web3Service.claimer);
+    console.log('- commission: ', Web3Service.commission);
+    console.log('- privateKeyAddress: ', Web3Service.privateKeyAddress);
+    console.log('- verifierAddress: ', Web3Service.verifierAddress);
   }
   async getVerifierAddress(privateKeyAddress: string) {
-    const verifierAddress =
-      await this.apiService.getVerifierByAddress(privateKeyAddress);
+    const verifierAddress = await this.getVerifierByAddress(privateKeyAddress);
     return verifierAddress;
   }
   async getNetWork() {
@@ -69,29 +76,28 @@ export class Web3Service {
   async onStart() {
     try {
       this.logger.log('Web3Service initialized.');
-      const { privateKey, privateKeyAddress } = await this.getPrivateKey();
-      const verifierAddress = await this.getVerifierAddress(privateKeyAddress);
-      console.log('- verifierAddress: ', verifierAddress);
-      const nfts = await this.apiService.getNft(privateKeyAddress);
+      const nfts = await this.getNft(Web3Service.privateKeyAddress);
       if (nfts && nfts.length > 0) {
-        if (verifierAddress) {
-          await this.apiService.setupNode();
+        if (Web3Service.verifierAddress) {
+          await this.setupNode();
           const nftIds = nfts.map((item) => item.tokenId);
 
-          const verifierSignature =
-            await this.apiService.getVerifierSignatureNodeEnter(
-              verifierAddress,
-            );
+          const verifierSignature = await this.getVerifierSignatureNodeEnter(
+            Web3Service.verifierAddress,
+          );
 
           if (!verifierSignature) {
-            console.log('- Verifier Signature Not Found ', verifierAddress);
+            console.log(
+              '- Verifier Signature Not Found ',
+              Web3Service.verifierAddress,
+            );
             return true;
           }
           await this.nodeEnterWithSignature(
-            privateKeyAddress,
-            privateKey,
+            Web3Service.privateKeyAddress,
+            Web3Service.privateKey,
             verifierSignature,
-            verifierAddress,
+            Web3Service.verifierAddress,
             nftIds,
           );
         } else {
@@ -251,8 +257,8 @@ export class Web3Service {
       }
 
       const verifierAddress =
-        await this.apiService.getVerifierByAddress(privateKeyAddress);
-      const nfts = await this.apiService.getNft(privateKeyAddress);
+        await this.getVerifierByAddress(privateKeyAddress);
+      const nfts = await this.getNft(privateKeyAddress);
       if (nfts && nfts.length > 0) {
         if (verifierAddress) {
           const nftIds = nfts.map((item) => item.tokenId);
@@ -334,16 +340,15 @@ export class Web3Service {
   }
   async nodeExit() {
     try {
-      const { privateKey, privateKeyAddress } = await this.getPrivateKey();
-      const verifierAddress = await this.getVerifierAddress(privateKeyAddress);
-      if (verifierAddress) {
-        const verifierSignature =
-          await this.apiService.getVerifierSignatureNodeExit(verifierAddress);
+      if (Web3Service.verifierAddress) {
+        const verifierSignature = await this.getVerifierSignatureNodeExit(
+          Web3Service.verifierAddress,
+        );
         await this.nodeExitWithSignature(
-          privateKeyAddress,
-          privateKey,
+          Web3Service.privateKeyAddress,
+          Web3Service.privateKey,
           verifierSignature,
-          verifierAddress,
+          Web3Service.verifierAddress,
         );
       }
     } catch (error) {
@@ -408,5 +413,121 @@ export class Web3Service {
       console.log(error);
       throw error;
     }
+  }
+
+  async getDelegationStats() {
+    try {
+      const response = await axios.get(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/delegation-stats?address=${Web3Service.privateKeyAddress}&verifierAddress=${Web3Service.verifierAddress}`,
+      );
+      return response.data;
+    } catch (error) {
+      this.logger.error(error);
+      return null;
+    }
+  }
+
+  async getVerifierByAddress(userAddress: string) {
+    try {
+      console.log(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/get-verifier-by-address?address=${userAddress}`,
+      );
+      const response = await axios.get(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/get-verifier-by-address?address=${userAddress}`,
+      );
+
+      return response.data.verifierAddress;
+    } catch (error) {
+      this.logger.error(error);
+      return null;
+    }
+  }
+  async getVerifierSignatureNodeEnter(verifierAddress: string) {
+    try {
+      const response = await axios.get(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/node-enter-with-signature?verifierAddress=${verifierAddress}`,
+      );
+      return response.data;
+    } catch (error) {
+      this.logger.error(error);
+      return null;
+    }
+  }
+  async getVerifierSignatureNodeExit(verifierAddress: string) {
+    try {
+      const response = await axios.get(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/node-exit-with-signature?verifierAddress=${verifierAddress}`,
+      );
+      return response.data;
+    } catch (error) {
+      this.logger.error(error);
+      return null;
+    }
+  }
+  async dailyUptimeStatictis() {
+    try {
+      const response = await axios.get(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/daily-uptime-statictis?verifierAddress=${Web3Service.verifierAddress}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+  async dailyRewardStats() {
+    try {
+      const response = await axios.get(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/daily-reward-stats?address=${Web3Service.privateKeyAddress}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+  async getNft(address: string) {
+    try {
+      const response = await axios.get(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/nfts?address=${address}`,
+      );
+      return response.data;
+    } catch (error) {
+      this.logger.error(error);
+      return null;
+    }
+  }
+
+  async setupNode() {
+    try {
+      const response = await axios.post(
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/create-setup`,
+        {
+          userAddress: Web3Service.privateKeyAddress,
+          verifier: Web3Service.verifierAddress,
+          claimmer: Web3Service.claimer || Web3Service.privateKeyAddress,
+          commisstionRate: Web3Service.commission,
+        },
+
+        {
+          headers: {
+            'content-type': 'application/json',
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+  @Cron('*/1 * * * *')
+  async logs() {
+    const response = await axios.get(
+      `${process.env.URL_API_OPENPAD}/node-ai-vps/node-running-logs?address=${Web3Service.verifierAddress}`,
+    );
+    console.log('- Log node : ', JSON.stringify(response.data.data.data));
+
+    return response.data;
   }
 }

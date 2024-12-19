@@ -1,32 +1,32 @@
 import { Controller, forwardRef, Get, Inject } from '@nestjs/common';
-import { ApiService } from './api.service';
+import { Web3Service } from './web3.service';
 
 @Controller('api')
 export class ApiController {
   constructor(
-    @Inject(forwardRef(() => ApiService))
-    private readonly apiService: ApiService,
+    @Inject(forwardRef(() => Web3Service))
+    private readonly web3Service: Web3Service,
   ) {}
 
   @Get('node-exit')
   nodeExit() {
-    return this.apiService.nodeExit();
+    return this.web3Service.nodeExit();
   }
   @Get('daily-uptime-statictis')
   dailyUptimeStatictis() {
-    return this.apiService.dailyUptimeStatictis();
+    return this.web3Service.dailyUptimeStatictis();
   }
   @Get('daily-reward-stats')
   dailyRewardStats() {
-    return this.apiService.dailyRewardStats();
+    return this.web3Service.dailyRewardStats();
   }
 
   @Get('undelegate')
   undelegate() {
-    return this.apiService.undelegate();
+    return this.web3Service.undelegate();
   }
   @Get('get-delegation-stats')
   getDelegationStats() {
-    return this.apiService.getDelegationStats();
+    return this.web3Service.getDelegationStats();
   }
 }
