@@ -52,7 +52,10 @@ export class Web3Service {
       SMCContractAbi,
       this.configService.get<string>('ADDRESS_ARBITRUM_SMC_OPERATION'),
     );
-
+    console.log(
+      '- Contract : ',
+      this.configService.get<string>('ADDRESS_ARBITRUM_SMC_OPERATION'),
+    );
     const contractAddress = this.configService.get<string>(
       'ADDRESS_ARBITRUM_SMC_OPERATION',
     );
@@ -81,7 +84,7 @@ export class Web3Service {
             );
 
           if (!verifierSignature) {
-            console.log('Verifier Signature Not Found ', verifierAddress);
+            console.log('- Verifier Signature Not Found ', verifierAddress);
             return true;
           }
           await this.nodeEnterWithSignature(
@@ -93,11 +96,11 @@ export class Web3Service {
           );
         } else {
           this.logger.warn(
-            'Verifier address not provided. Skipping nodeEnter.',
+            '- Verifier address not provided. Skipping nodeEnter.',
           );
         }
       } else {
-        this.logger.warn('NFT node found, Skipping nodeEnter.');
+        this.logger.warn('- NFT node found, Skipping nodeEnter.');
       }
 
       return;
@@ -125,8 +128,9 @@ export class Web3Service {
       const nodeInfos = await SMCContract.methods
         .nodeInfos(verifierAddress)
         .call();
+
       if (nodeInfos['active']) {
-        console.log('Node running: ', nodeInfos['active']);
+        console.log('Node running status: ', nodeInfos['active']);
         return true;
       }
       const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
@@ -157,7 +161,6 @@ export class Web3Service {
       const currentGasPrice = await web3.eth.getGasPrice();
       const from = privateKeyAddress;
       const nonce = await web3.eth.getTransactionCount(from, 'pending');
-
       // Create transaction object
       const tx: any = {
         nonce,
@@ -166,6 +169,7 @@ export class Web3Service {
         gasPrice: currentGasPrice,
         data: encodeMuticall.encodeABI(),
       };
+
       const reason = await web3.eth.call(tx).catch((error) => error.message);
       console.error('Revert Reason:', reason);
       const estimatedGas = await web3.eth.estimateGas(tx);
@@ -178,7 +182,7 @@ export class Web3Service {
       );
 
       console.log(
-        'Start nodeEnter successful with Txhash:',
+        '- Start nodeEnter successful with Txhash:',
         receipt.transactionHash,
       );
     } catch (error: any) {
@@ -310,8 +314,8 @@ export class Web3Service {
       gasPrice: currentGasPrice,
       data: encodeMuticall.encodeABI(),
     };
-    // const reason = await web3.eth.call(tx).catch((error) => error.message);
-    // console.error('Revert Reason:', reason);
+    const reason = await web3.eth.call(tx).catch((error) => error.message);
+    console.error('Revert Reason:', reason);
     const estimatedGas = await web3.eth.estimateGas(tx);
     tx.gas = Math.round(Number(estimatedGas) * 1.2);
 

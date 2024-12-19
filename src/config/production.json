@@ -1,5 +1,5 @@
 {
-    "arbitrumSepoliaRpc": "https://sepolia-rollup.arbitrum.io/rpc",
+    "arbitrumSepoliaRpc": "https://arbitrum-sepolia-rpc.publicnode.com",
     "arbitrumMainnetRpc": "https://arb1.arbitrum.io/rpc",
     "SmcContractAbi": [
         {

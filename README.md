@@ -19,6 +19,10 @@ $ npm install
 Copy the example environment variable file and configure it:
 
 ```bash
+# change environment
+# PRIVATE_KEY=
+# CLAIMER_ADDRESS=
+# COMMISSION_RATE=
 $ cp .env.example .env
 ```
 
@@ -27,14 +31,11 @@ $ cp .env.example .env
 Run the application using one of the following modes:
 
 ```bash
-# Development mode
-$ npm run start
-
-# Watch mode (auto-reloads on file changes)
-$ npm run start:dev
+# build source
+$ npm run build
 
 # Production mode
-$ npm run start:prod
+$ PRIVATE_KEY= CLAIMER_ADDRESS= COMMISSION_RATE=10 npm run start:prod
 ```
 
 ---

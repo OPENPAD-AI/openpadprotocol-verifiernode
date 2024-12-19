@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { Web3Service } from 'src/web3/web3.service';
 import axios from 'axios';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class ApiService {
@@ -133,5 +134,16 @@ export class ApiService {
       console.log(error);
       return null;
     }
+  }
+  @Cron('*/1 * * * *')
+  async logs() {
+    const { privateKeyAddress } = await this.web3Service.getPrivateKey();
+    const verifierAddress = await this.getVerifierByAddress(privateKeyAddress);
+    const response = await axios.get(
+      `${process.env.URL_API_OPENPAD}/node-ai-vps/node-running-logs?address=${verifierAddress}`,
+    );
+    console.log('- Log node : ', JSON.stringify(response.data.data.data));
+
+    return response.data;
   }
 }

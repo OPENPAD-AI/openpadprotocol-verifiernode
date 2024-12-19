@@ -5,7 +5,7 @@ import { ApiModule } from 'src/api/api.module';
 import { ApiService } from 'src/api/api.service';
 
 @Module({
-  imports: [ConfigModule, forwardRef(() => ApiModule)],
+  imports: [ConfigModule],
   providers: [Web3Service, ApiService],
   exports: [Web3Service],
 })
