@@ -47,9 +47,10 @@ export class Web3Service {
     return verifierAddress;
   }
   async getNetWork() {
-    const network = process.env.NETWORK_ARBITRUM
-      ? Network.ARBITRUM_SEPOLIA
-      : Network.ARBITRUM_MAINNET;
+    const network =
+      process.env.NETWORK_ARBITRUM == 'production'
+        ? Network.ARBITRUM_MAINNET
+        : Network.ARBITRUM_SEPOLIA;
     const web3 = this.getWeb3(network);
 
     const SMCContractAbi = JSON.parse(
