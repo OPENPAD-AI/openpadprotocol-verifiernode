@@ -7,6 +7,9 @@ API_URL=http://localhost:5000/api
 DAILY_UPTIME_ENDPOINT=/daily-uptime-statictis
 DAILY_REWARD_ENDPOINT=/daily-reward-stats
 DELEGATION_STATS_ENDPOINT=/get-delegation-stats
+NODE_EXIT_ENDPOINT=/node-exit
+NODE_ENTER_ENDPOINT=/node-exit
+
 
 # Command to call the API using curl
 CALL_API_CMD=curl -X GET
@@ -46,4 +49,13 @@ call-daily-reward:
 call-delegation-stats:
 	@echo "Calling API for Delegation Stats..."
 	$(CALL_API_CMD) $(API_URL)$(DELEGATION_STATS_ENDPOINT)
-
+	
+# Call the node exit stats API
+call-node-exit:
+	@echo "Calling API for Delegation Stats..."
+	$(CALL_API_CMD) $(API_URL)$(NODE_EXIT_ENDPOINT)
+	
+# Call the node exit stats API
+call-node-enter:
+	@echo "Calling API for Delegation Stats..."
+	$(CALL_API_CMD) $(API_URL)$(NODE_ENTER_ENDPOINT)

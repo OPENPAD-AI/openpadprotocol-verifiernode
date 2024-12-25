@@ -12,6 +12,10 @@ export class ApiController {
   nodeExit() {
     return this.web3Service.nodeExit();
   }
+  @Get('node-enter')
+  nodeStart() {
+    return this.web3Service.onStart();
+  }
   @Get('daily-uptime-statictis')
   dailyUptimeStatictis() {
     return this.web3Service.dailyUptimeStatictis();

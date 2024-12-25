@@ -1,5 +1,7 @@
 # Project Documentation
 
+This README provides instructions on setting up and running the project using two different methods.
+
 ---
 
 ## Hardware Requirements
@@ -18,7 +20,60 @@
 
 ---
 
-This README provides instructions on setting up and running the project using two different methods.
+## Setup Node.js
+
+### Install Node.js
+
+Download and install Node.js from the [official website](https://nodejs.org/):
+
+1. Go to [https://nodejs.org/](https://nodejs.org/).
+2. Download the LTS (Long-Term Support) version for your operating system.
+3. Follow the installation instructions provided for your platform.
+
+### Install Node.js v21 or Higher
+
+For the latest version (v21 or higher), use the following steps:
+
+1. Install `nvm` (Node Version Manager) to manage Node.js versions:
+
+   ```bash
+   $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+   ```
+
+2. Restart your terminal or load `nvm`:
+
+   ```bash
+   $ source ~/.nvm/nvm.sh
+   ```
+
+3. Install Node.js v21:
+
+   ```bash
+   $ nvm install 21
+   ```
+
+4. Use Node.js v21:
+
+   ```bash
+   $ nvm use 21
+   ```
+
+5. Verify the installed version:
+
+   ```bash
+   $ node -v
+   ```
+
+### Verify Installation
+
+After installation, verify that Node.js and npm (Node Package Manager) are installed correctly:
+
+```bash
+$ node -v
+$ npm -v
+```
+
+These commands should output the installed versions of Node.js and npm.
 
 ---
 
@@ -127,6 +182,16 @@ To call an API endpoint, use one of the following commands:
   ```bash
   $ make call-delegation-stats
   ```
+- **Node Enter**:
+
+  ```bash
+  $ make call-node-enter
+  ```
+
+- **Node Exit**:
+  ```bash
+  $ make call-node-exit
+  ```
 
 ---
 
@@ -142,6 +207,8 @@ Here’s a summary of the `Makefile` commands:
 | `make call-daily-uptime`     | Call the Daily Uptime Statistics API |
 | `make call-daily-reward`     | Call the Daily Reward Statistics API |
 | `make call-delegation-stats` | Call the Delegation Statistics API   |
+| `make call-node-exit`        | Call the Node Exit API               |
+| `make call-node-enter`       | Call the Node Enter API              |
 
 ---
 
