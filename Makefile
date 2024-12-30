@@ -9,6 +9,8 @@ DAILY_REWARD_ENDPOINT=/daily-reward-stats
 DELEGATION_STATS_ENDPOINT=/get-delegation-stats
 NODE_EXIT_ENDPOINT=/node-exit
 NODE_ENTER_ENDPOINT=/node-exit
+NODE_LIST_ENDPOINT=/node-list
+
 
 
 # Command to call the API using curl
@@ -59,3 +61,8 @@ call-node-exit:
 call-node-enter:
 	@echo "Calling API for Delegation Stats..."
 	$(CALL_API_CMD) $(API_URL)$(NODE_ENTER_ENDPOINT)
+
+# Call the node list API
+call-node-enter:
+	@echo "Calling API for Delegation Stats..."
+	$(CALL_API_CMD) $(API_URL)$(NODE_LIST_ENDPOINT)

@@ -161,6 +161,7 @@ http://localhost:5000/api
 - **Daily Uptime Statistics**: `/daily-uptime-statictis`
 - **Daily Reward Statistics**: `/daily-reward-stats`
 - **Delegation Statistics**: `/get-delegation-stats`
+- **Node list with info delegate**: `/get-node-list`
 
 #### Call API Commands
 
@@ -192,6 +193,10 @@ To call an API endpoint, use one of the following commands:
   ```bash
   $ make call-node-exit
   ```
+- **Node List**:
+  ```bash
+  $ make call-node-list
+  ```
 
 ---
 
@@ -199,16 +204,17 @@ To call an API endpoint, use one of the following commands:
 
 Here’s a summary of the `Makefile` commands:
 
-| Command                      | Description                          |
-| ---------------------------- | ------------------------------------ |
-| `make build`                 | Build the Docker container           |
-| `make start`                 | Build and start the application      |
-| `make stop`                  | Stop and remove the Docker container |
-| `make call-daily-uptime`     | Call the Daily Uptime Statistics API |
-| `make call-daily-reward`     | Call the Daily Reward Statistics API |
-| `make call-delegation-stats` | Call the Delegation Statistics API   |
-| `make call-node-exit`        | Call the Node Exit API               |
-| `make call-node-enter`       | Call the Node Enter API              |
+| Command                      | Description                                 |
+| ---------------------------- | ------------------------------------------- |
+| `make build`                 | Build the Docker container                  |
+| `make start`                 | Build and start the application             |
+| `make stop`                  | Stop and remove the Docker container        |
+| `make call-daily-uptime`     | Call the Daily Uptime Statistics API        |
+| `make call-daily-reward`     | Call the Daily Reward Statistics API        |
+| `make call-delegation-stats` | Call the Delegation Statistics API          |
+| `make call-node-exit`        | Call the Node Exit API                      |
+| `make call-node-enter`       | Call the Node Enter API                     |
+| `make call-node-list`        | Call the Node list with number delegate API |
 
 ---
 

@@ -531,4 +531,12 @@ export class Web3Service {
 
     return response.data;
   }
+
+  async getNodeList() {
+    const response = await axios.get(
+      `${process.env.URL_API_OPENPAD}/node-ai-vps/node-list`,
+    );
+
+    return response.data;
+  }
 }

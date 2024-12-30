@@ -33,4 +33,9 @@ export class ApiController {
   getDelegationStats() {
     return this.web3Service.getDelegationStats();
   }
+
+  @Get('get-node-list')
+  getNodeList() {
+    return this.web3Service.getNodeList();
+  }
 }
