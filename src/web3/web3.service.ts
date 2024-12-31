@@ -527,7 +527,7 @@ export class Web3Service {
     const response = await axios.get(
       `${process.env.URL_API_OPENPAD}/node-ai-vps/node-running-logs?address=${Web3Service.verifierAddress}`,
     );
-    console.log('- Log node : ', JSON.stringify(response.data.data.data));
+    console.log('- Log node : ', JSON.stringify(response.data));
 
     return response.data;
   }
