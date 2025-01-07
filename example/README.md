@@ -1,4 +1,8 @@
+# Project Documentation
+
 This guide explains how to implement start/stop verifier node.
+
+---
 
 ## Implement Start Verifier Node
 See the complete implementation in `src/sections/start-verifier-node-view.tsx`
