@@ -1,4 +1,4 @@
-import { NftItemType, SetupVerifierType } from "@/types/node-type";
+import { LicenseKeyItemType, SetupVerifierType } from "@/types/node-type";
 import { useUser } from "../hooks/use-user";
 import { NodeOperationService } from "@/services/node-operation-service";
 import _ from 'lodash';
@@ -16,12 +16,12 @@ export default function StartVerifierNodeView() {
   const { handleWriteContract } = useWriteContracts();
   const { isActiveDelegate, refetchNodeInfos } = useReadNodeOperationContract(user?.address, user?.verifierWallet);
   const [filterToken, setFilterToken] = useState<string[]>([]);
-  const [nftAvailable, setNftAvailable] = useState<NftItemType[]>([]);
+  const [licenseKeysAvailable, setLicenseKeysAvailable] = useState<LicenseKeyItemType[]>([]);
 
   // Handle number of license on ui
   const [numberOfLicense, setNumberOfLicense] = useState<number>(1);
 
-  // Main function to initiate node
+  // Main function to start verifier node
   const handleStartVerifierNode = async () => {
     await createSetupVerifier();
     await handleDelegate();
@@ -103,23 +103,23 @@ export default function StartVerifierNodeView() {
 
   useEffect(() => {
     if (!user?.address) return;
-    fetchUserNfts();
+    fetchUserLicenseKeys();
   }, [user?.address]);
 
-  const fetchUserNfts = async () => {
+  const fetchUserLicenseKeys = async () => {
     if (!user?.address) return;
-    const { data: nftData } = await NodeOperationService.getUserNft(user?.address);
+    const { data: licenseKeysData } = await NodeOperationService.getUserLicenseKeys(user?.address);
 
     // Sort tier
-    const sortedNftData = nftData.sort((a: NftItemType, b: NftItemType) => (b.tier ?? 0) - (a.tier ?? 0));
-    setNftAvailable(sortedNftData);
+    const sortedLicenseKeysData = licenseKeysData.sort((a: LicenseKeyItemType, b: LicenseKeyItemType) => (b.tier ?? 0) - (a.tier ?? 0));
+    setLicenseKeysAvailable(sortedLicenseKeysData);
   };
 
   // ------------- Fetch user's License Key ------------------------------------------------------------
   useEffect(() => {
     (async () => {
       try {
-        const promises = nftAvailable.map((nft) =>
+        const promises = licenseKeysAvailable.map((nft) =>
           readContract(config, {
             abi: OPERATION_CONTRACT.abi,
             address: OPERATION_CONTRACT.address,
@@ -132,8 +132,9 @@ export default function StartVerifierNodeView() {
 
         const filterTokenId = [];
         for (let i = 0; i < results.length; i++) {
-          if (results[i] !== undefined && results[i].toLowerCase() !== user?.verifierWallet.toLowerCase())
-            filterTokenId.push(nftAvailable[i].tokenId);
+          if (results[i] === "0x0000000000000000000000000000000000000000") { // 0x00... indicates the License Key is still available and not delegated to anyone
+            filterTokenId.push(licenseKeysAvailable[i].tokenId);
+          }
         }
 
         setFilterToken(filterTokenId);
@@ -141,7 +142,7 @@ export default function StartVerifierNodeView() {
         console.error(error);
       }
     })();
-  }, [nftAvailable]);
+  }, [licenseKeysAvailable]);
   // ------------- END - Fetch user's License Key ------------------------------------------------------------
 
   return (
