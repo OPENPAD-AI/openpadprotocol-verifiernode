@@ -2,10 +2,10 @@
 
 This README provides instructions on how to set up and run Openpad Node in 2 directions: Node Operator and Node Deployment
 
-- Hardware Requirement
-- Software Installation
-- Node Operator Guide
-- Specification for Node Deployment integration
+- [Hardware Requirement](#hardware-requirements)
+- [Software Installation](#setup-nodejs)
+- [Node Operator Guide](#node-operator-guide)
+- [Specification for Node Deployment integration](#specification-for-node-deployment-integration)
 
 ---
 
