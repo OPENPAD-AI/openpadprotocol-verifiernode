@@ -225,9 +225,14 @@ Here’s a summary of the `Makefile` commands:
 
 - Make sure the environment variables in `.env` are configured correctly before starting the project.
 - The `Makefile` commands assume that the API endpoints are available on the base URL `http://localhost:5000/api`.
-- **Important** : If you interact directly with the contract without going through this source, you must use the API endpoints **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call the contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
 
 For further assistance, please refer to the project documentation or contact the development team.
+
+## Node Deployment Integration
+
+For NAAS that provide Node Deployment service, users manually perform transaction signature without going through this source.
+When launching Node, NAAS needs to call API endpoint /get-config to get Verifier Address and necessary information first.
+Then, for each user operation on the Node on onchain, it is necessary to use API endpoint **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call the contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
 
 # Implementing Node Start/Stop Verification with React
 
