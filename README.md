@@ -229,6 +229,8 @@ Here’s a summary of the `Makefile` commands:
 
 For further assistance, please refer to the project documentation or contact the development team.
 
-# Implementing Node Start/Stop Verification with React
+---
 
+# Interacting with smart contract 
+Frontend start/stop verifier node with ReactJS 
 For detailed instructions, please refer to the documentation located in the `example` folder.
