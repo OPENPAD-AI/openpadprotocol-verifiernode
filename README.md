@@ -232,5 +232,4 @@ For further assistance, please refer to the project documentation or contact the
 ---
 
 # Interacting with smart contract 
-Frontend start/stop verifier node with ReactJS 
-For detailed instructions, please refer to the documentation located in the `example` folder.
+For detailed instructions on starting and stopping the verifier node with ReactJS, please see the documentation in the `example` folder.
