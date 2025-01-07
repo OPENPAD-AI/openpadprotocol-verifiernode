@@ -8,7 +8,7 @@ This guide explains how to implement start/stop verifier node.
 See the complete implementation in `src/sections/start-verifier-node-view.tsx`
 Key functions include:
 
-### 1. `handleStartNode`:
+### 1. `handleStartVerifierNode`:
  This is the main function triggered by the button click. It orchestrates the process by calling two other functions: `createSetupVerifier()` and `handleDelegate()`.
 
 ### 2. `createSetupVerifier`: 
