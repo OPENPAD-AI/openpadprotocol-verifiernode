@@ -231,5 +231,5 @@ For further assistance, please refer to the project documentation or contact the
 
 ---
 
-# Interacting with smart contract 
-For detailed instructions on starting and stopping the verifier node with ReactJS, please see the documentation in the `example` folder.
+# Support interaction with Smart Contract with React
+For detailed instructions on start, stop, delegate and revoke delegate on verifier node with ReactJS, please see detail documentation in `example` folder.
