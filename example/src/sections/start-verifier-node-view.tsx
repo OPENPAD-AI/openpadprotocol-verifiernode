@@ -22,7 +22,7 @@ export default function StartVerifierNodeView() {
   const [numberOfLicense, setNumberOfLicense] = useState<number>(1);
 
   // Main function to initiate node
-  const handleStartNode = async () => {
+  const handleStartVerifierNode = async () => {
     await createSetupVerifier();
     await handleDelegate();
   };
@@ -147,7 +147,7 @@ export default function StartVerifierNodeView() {
   return (
     <div>
       <button
-        onClick={handleStartNode}
+        onClick={handleStartVerifierNode}
       >
         Start Verifier Node
       </button>

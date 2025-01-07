@@ -236,4 +236,4 @@ Then, for each user operation on the Node on onchain, it is necessary to use API
 
 # Implementing Node Start/Stop Verification with React
 
-For detailed instructions, please refer to the documentation located in the `example` folder.
+For detailed instructions on starting and stopping the verifier node with ReactJS, please see the documentation in the `example` folder.
