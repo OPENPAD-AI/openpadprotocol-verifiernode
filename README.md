@@ -234,6 +234,6 @@ For NAAS that provide Node Deployment service, users manually perform transactio
 When launching Node, NAAS needs to call API endpoint /get-config to get Verifier Address and necessary information first.
 Then, for each user operation on the Node on onchain, it is necessary to use API endpoint **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call the contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
 
-## Implementing Node Start/Stop Verification with React
+## Support interaction with Smart Contract with React
 
-For detailed instructions on starting and stopping the verifier node with ReactJS, please see the documentation in the `example` folder.
+For detailed instructions on start, stop, delegate and revoke delegate on verifier node with ReactJS, please see detail documentation in `example` folder.
