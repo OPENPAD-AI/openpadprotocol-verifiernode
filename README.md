@@ -228,3 +228,8 @@ Here’s a summary of the `Makefile` commands:
 - **Important** : If you interact directly with the contract without going through the backend, you must use the API endpoints **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call the contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
 
 For further assistance, please refer to the project documentation or contact the development team.
+
+
+# Implementing Node Start/Stop Verification with React
+
+For detailed instructions, please refer to the documentation located in the `example` folder.
