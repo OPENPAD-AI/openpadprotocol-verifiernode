@@ -23,6 +23,6 @@ export class Web3Module implements OnModuleInit, OnApplicationShutdown {
   }
   async onApplicationShutdown(signal?: string) {
     console.log(`ApiModule is shutting down! Signal: ${signal}`);
-    await this.web3Service.undelegate();
+    await this.web3Service.nodeExit();
   }
 }
