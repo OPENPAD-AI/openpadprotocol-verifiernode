@@ -13,7 +13,7 @@ export class Web3Service {
   public static claimer = '';
   public static commission = 5;
   public static privateKey = '';
-  public static privateKeyAddress = '';
+  public static pubicKeyAddress = '';
   public static verifierAddress = '';
   constructor(private configService: ConfigService) {
     // if (!Web3Service.initialized) {
@@ -22,28 +22,69 @@ export class Web3Service {
     //   });
     // }
   }
-  async getPrivateKey() {
+  async getConfig() {
     Web3Service.claimer = this.configService.get<string>('CLAIMER_ADDRESS');
     Web3Service.commission =
       +this.configService.get<string>('COMMISSION_RATE') || 5;
-    Web3Service.privateKey = this.configService.get<string>('PRIVATE_KEY');
-    if (!Web3Service.privateKey.startsWith('0x')) {
-      Web3Service.privateKeyAddress =
-        this.web3.eth.accounts.privateKeyToAccount(
-          '0x' + Web3Service.privateKey,
-        ).address;
 
-      Web3Service.verifierAddress = await this.getVerifierAddress(
-        Web3Service.privateKeyAddress,
-      );
+    Web3Service.privateKey = this.configService.get<string>('PRIVATE_KEY');
+    if (this.configService.get<string>('PUBLIC_KEY')) {
+      Web3Service.pubicKeyAddress = this.configService
+        .get<string>('PUBLIC_KEY')
+        .toLocaleLowerCase();
+    } else {
+      if (!Web3Service.privateKey.startsWith('0x')) {
+        Web3Service.pubicKeyAddress =
+          this.web3.eth.accounts.privateKeyToAccount(
+            '0x' + Web3Service.privateKey,
+          ).address;
+      }
     }
+
+    Web3Service.verifierAddress = await this.getVerifierAddress(
+      Web3Service.pubicKeyAddress,
+    );
     console.log('- claimer: ', Web3Service.claimer);
     console.log('- commission: ', Web3Service.commission);
-    console.log('- privateKeyAddress: ', Web3Service.privateKeyAddress);
+    console.log('- pubicKeyAddress: ', Web3Service.pubicKeyAddress);
     console.log('- verifierAddress: ', Web3Service.verifierAddress);
+    return {
+      claimer: Web3Service.claimer,
+      commission: Web3Service.commission,
+      pubicKeyAddress: Web3Service.pubicKeyAddress,
+      verifierAddress: Web3Service.verifierAddress,
+    };
   }
-  async getVerifierAddress(privateKeyAddress: string) {
-    const verifierAddress = await this.getVerifierByAddress(privateKeyAddress);
+  async processVerifierSignatureNodeEnter() {
+    const verifierSignature = await this.getVerifierSignatureNodeEnter(
+      Web3Service.verifierAddress,
+    );
+
+    if (!verifierSignature) {
+      console.log(
+        '- Verifier Signature Not Found ',
+        Web3Service.verifierAddress,
+      );
+      return false;
+    }
+    return verifierSignature;
+  }
+  async processVerifierSignatureNodeExit() {
+    const verifierSignature = await this.getVerifierSignatureNodeExit(
+      Web3Service.verifierAddress,
+    );
+
+    if (!verifierSignature) {
+      console.log(
+        '- Verifier Signature Not Found ',
+        Web3Service.verifierAddress,
+      );
+      return false;
+    }
+    return verifierSignature;
+  }
+  async getVerifierAddress(pubicKeyAddress: string) {
+    const verifierAddress = await this.getVerifierByAddress(pubicKeyAddress);
     return verifierAddress;
   }
   async getNetWork() {
@@ -73,17 +114,21 @@ export class Web3Service {
       web3,
     };
   }
-
+  async onNodeSetup() {
+    await this.getConfig();
+    if (Web3Service.verifierAddress) {
+      await this.setupNode();
+    }
+  }
   async onStart() {
     try {
       this.logger.log('Web3Service initialized.');
-      await this.getPrivateKey()
+      await this.getConfig();
       Web3Service.initialized = true;
 
-      const nfts = await this.getNft(Web3Service.privateKeyAddress);
+      const nfts = await this.getNft(Web3Service.pubicKeyAddress);
       if (nfts && nfts.length > 0) {
         if (Web3Service.verifierAddress) {
-          await this.setupNode();
           const nftIds = nfts.map((item) => item.tokenId);
 
           const verifierSignature = await this.getVerifierSignatureNodeEnter(
@@ -98,7 +143,7 @@ export class Web3Service {
             return true;
           }
           await this.nodeEnterWithSignature(
-            Web3Service.privateKeyAddress,
+            Web3Service.pubicKeyAddress,
             Web3Service.privateKey,
             verifierSignature,
             Web3Service.verifierAddress,
@@ -126,7 +171,7 @@ export class Web3Service {
   }
 
   async nodeEnterWithSignature(
-    privateKeyAddress: string,
+    pubicKeyAddress: string,
     privateKey: string,
     signature: any,
     verifierAddress: string,
@@ -169,7 +214,7 @@ export class Web3Service {
 
       const encodeMuticall = SMCContract.methods.multicall(args);
       const currentGasPrice = await web3.eth.getGasPrice();
-      const from = privateKeyAddress;
+      const from = pubicKeyAddress;
       const nonce = await web3.eth.getTransactionCount(from, 'pending');
       // Create transaction object
       const tx: any = {
@@ -252,24 +297,37 @@ export class Web3Service {
   async undelegate() {
     try {
       this.logger.log('Web3Service initialized.');
-      const privateKey = this.configService.get<string>('PRIVATE_KEY');
-      let privateKeyAddress = '';
-      if (!privateKey.startsWith('0x')) {
-        privateKeyAddress = this.web3.eth.accounts.privateKeyToAccount(
-          '0x' + privateKey,
-        ).address;
-      }
+      // const privateKey = this.configService.get<string>('PRIVATE_KEY');
+      // let pubicKeyAddress = '';
+      // if (!privateKey.startsWith('0x')) {
+      //   pubicKeyAddress = this.web3.eth.accounts.privateKeyToAccount(
+      //     '0x' + privateKey,
+      //   ).address;
+      // }
 
-      const verifierAddress =
-        await this.getVerifierByAddress(privateKeyAddress);
-      const nfts = await this.getNft(privateKeyAddress);
+      if (this.configService.get<string>('PUBLIC_KEY')) {
+        Web3Service.pubicKeyAddress = this.configService
+          .get<string>('PUBLIC_KEY')
+          .toLocaleLowerCase();
+      } else {
+        if (!Web3Service.privateKey.startsWith('0x')) {
+          Web3Service.pubicKeyAddress =
+            this.web3.eth.accounts.privateKeyToAccount(
+              '0x' + Web3Service.privateKey,
+            ).address;
+        }
+      }
+      const verifierAddress = await this.getVerifierByAddress(
+        Web3Service.pubicKeyAddress,
+      );
+      const nfts = await this.getNft(Web3Service.pubicKeyAddress);
       if (nfts && nfts.length > 0) {
         if (verifierAddress) {
           const nftIds = nfts.map((item) => item.tokenId);
 
           await this.undelegateWithContract(
-            privateKeyAddress,
-            privateKey,
+            Web3Service.pubicKeyAddress,
+            Web3Service.privateKey,
             verifierAddress,
             nftIds,
           );
@@ -289,7 +347,7 @@ export class Web3Service {
     }
   }
   async undelegateWithContract(
-    privateKeyAddress: string,
+    pubicKeyAddress: string,
     privateKey: string,
     verifierAddress: string,
     nftIds: string[],
@@ -313,7 +371,7 @@ export class Web3Service {
 
     const encodeMuticall = SMCContract.methods.multicall(args);
     const currentGasPrice = await web3.eth.getGasPrice();
-    const from = privateKeyAddress;
+    const from = pubicKeyAddress;
     const nonce = await web3.eth.getTransactionCount(from, 'pending');
 
     // Create transaction object
@@ -349,7 +407,7 @@ export class Web3Service {
           Web3Service.verifierAddress,
         );
         await this.nodeExitWithSignature(
-          Web3Service.privateKeyAddress,
+          Web3Service.pubicKeyAddress,
           Web3Service.privateKey,
           verifierSignature,
           Web3Service.verifierAddress,
@@ -361,7 +419,7 @@ export class Web3Service {
     }
   }
   async nodeExitWithSignature(
-    privateKeyAddress: string,
+    pubicKeyAddress: string,
     privateKey: string,
     signature: any,
     verifierAddress: string,
@@ -384,7 +442,7 @@ export class Web3Service {
         signature.data.s,
       );
       const currentGasPrice = await web3.eth.getGasPrice();
-      const from = privateKeyAddress;
+      const from = pubicKeyAddress;
       const nonce = await web3.eth.getTransactionCount(from, 'pending');
 
       // Create transaction object
@@ -422,7 +480,7 @@ export class Web3Service {
   async getDelegationStats() {
     try {
       const response = await axios.get(
-        `${process.env.URL_API_OPENPAD}/node-ai-vps/delegation-stats?address=${Web3Service.privateKeyAddress}&verifierAddress=${Web3Service.verifierAddress}`,
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/delegation-stats?address=${Web3Service.pubicKeyAddress}&verifierAddress=${Web3Service.verifierAddress}`,
       );
       return response.data;
     } catch (error) {
@@ -482,7 +540,7 @@ export class Web3Service {
   async dailyRewardStats() {
     try {
       const response = await axios.get(
-        `${process.env.URL_API_OPENPAD}/node-ai-vps/daily-reward-stats?address=${Web3Service.privateKeyAddress}`,
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/daily-reward-stats?address=${Web3Service.pubicKeyAddress}`,
       );
       return response.data;
     } catch (error) {
@@ -507,9 +565,9 @@ export class Web3Service {
       const response = await axios.post(
         `${process.env.URL_API_OPENPAD}/node-ai-vps/create-setup`,
         {
-          userAddress: Web3Service.privateKeyAddress,
+          userAddress: Web3Service.pubicKeyAddress,
           verifier: Web3Service.verifierAddress,
-          claimmer: Web3Service.claimer || Web3Service.privateKeyAddress,
+          claimmer: Web3Service.claimer || Web3Service.pubicKeyAddress,
           commisstionRate: Web3Service.commission,
         },
 
@@ -519,6 +577,7 @@ export class Web3Service {
           },
         },
       );
+      console.log('Setup node', response.data);
       return response.data;
     } catch (error) {
       console.log(error);

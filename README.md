@@ -162,6 +162,9 @@ http://localhost:5000/api
 - **Daily Reward Statistics**: `/daily-reward-stats`
 - **Delegation Statistics**: `/get-delegation-stats`
 - **Node list with info delegate**: `/get-node-list`
+- **Get verifier address**: `/get-config`
+- **Get verifier signature node enter**: `/get-verifier-signature-node-enter`
+- **Get verifier signature node exit**: `/get-verifier-signature-node-exit`
 
 #### Call API Commands
 
@@ -222,5 +225,6 @@ Here’s a summary of the `Makefile` commands:
 
 - Make sure the environment variables in `.env` are configured correctly before starting the project.
 - The `Makefile` commands assume that the API endpoints are available on the base URL `http://localhost:5000/api`.
+- **Important** : If you interact directly with the contract without going through the backend, you must use the API endpoints get-verifier-signature-node-enter and get-verifier-signature-node-exit to retrieve the signature. Then, use these signatures to call the contract functions nodeEnterWithSignature and nodeExitWithSignature.
 
 For further assistance, please refer to the project documentation or contact the development team.

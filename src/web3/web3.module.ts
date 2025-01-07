@@ -19,6 +19,7 @@ export class Web3Module implements OnModuleInit, OnApplicationShutdown {
 
   async onModuleInit() {
     console.log('AppModule has been initialized');
+    await this.web3Service.onNodeSetup();
     await this.web3Service.onStart();
   }
   async onApplicationShutdown(signal?: string) {
