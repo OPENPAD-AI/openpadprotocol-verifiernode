@@ -4,7 +4,7 @@ This guide explains how to implement start/stop verifier node.
 
 ---
 
-# Implement Start Verifier Node
+# Starting the Verifier Node
 See the complete implementation in `src/sections/start-verifier-node-view.tsx`
 Key functions include:
 
@@ -29,7 +29,7 @@ This sequence ensures that the verifier node is properly set up and the necessar
 
 ---
 
-# Implement Stop Verifier Node
+# Stopping the Verifier Node
 See the complete implementation in `src/sections/stop-verifier-node-view.tsx`
 Key functions include:
 
