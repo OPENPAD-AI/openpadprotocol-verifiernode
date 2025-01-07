@@ -16,11 +16,11 @@ export class Web3Service {
   public static privateKeyAddress = '';
   public static verifierAddress = '';
   constructor(private configService: ConfigService) {
-    if (!Web3Service.initialized) {
-      this.getPrivateKey().then(() => {
-        Web3Service.initialized = true;
-      });
-    }
+    // if (!Web3Service.initialized) {
+    //   this.getPrivateKey().then(() => {
+    //     Web3Service.initialized = true;
+    //   });
+    // }
   }
   async getPrivateKey() {
     Web3Service.claimer = this.configService.get<string>('CLAIMER_ADDRESS');
@@ -77,6 +77,9 @@ export class Web3Service {
   async onStart() {
     try {
       this.logger.log('Web3Service initialized.');
+      await this.getPrivateKey()
+      Web3Service.initialized = true;
+
       const nfts = await this.getNft(Web3Service.privateKeyAddress);
       if (nfts && nfts.length > 0) {
         if (Web3Service.verifierAddress) {
@@ -527,7 +530,7 @@ export class Web3Service {
     const response = await axios.get(
       `${process.env.URL_API_OPENPAD}/node-ai-vps/node-running-logs?address=${Web3Service.verifierAddress}`,
     );
-    console.log('- Log node : ', JSON.stringify(response.data.data.data));
+    console.log('- Log node : ', JSON.stringify(response.data));
 
     return response.data;
   }
