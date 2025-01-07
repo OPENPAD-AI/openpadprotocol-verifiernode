@@ -1,6 +1,11 @@
 # Project Documentation
 
-This README provides instructions on setting up and running the project using two different methods.
+This README provides instructions on how to set up and run Openpad Node in 2 directions: Node Operator and Node Deployment
+
+- [Hardware Requirement](#hardware-requirements)
+- [Software Installation](#setup-nodejs)
+- [Node Operator Guide](#node-operator-guide)
+- [Specification for Node Deployment integration](#specification-for-node-deployment-integration)
 
 ---
 
@@ -77,9 +82,11 @@ These commands should output the installed versions of Node.js and npm.
 
 ---
 
-## Method 1: Local Setup
+## Node Operator Guide
 
-### Project Setup
+### Method 1: Local Setup
+
+#### Project Setup
 
 Install project dependencies:
 
@@ -87,7 +94,7 @@ Install project dependencies:
 $ npm install
 ```
 
-### Create Environment Variable
+#### Create Environment Variable
 
 Copy the example environment variable file and configure it:
 
@@ -99,7 +106,7 @@ Copy the example environment variable file and configure it:
 $ cp .env.example .env
 ```
 
-### Compile and Run the Project
+#### Compile and Run the Project
 
 Run the application using one of the following modes:
 
@@ -113,18 +120,18 @@ $ PRIVATE_KEY= CLAIMER_ADDRESS= COMMISSION_RATE=10 npm run start:prod
 
 ---
 
-## Method 2: Using Docker and Makefile
+### Method 2: Using Docker and Makefile
 
 For Docker users, the project includes a `Makefile` to simplify API calls and container management.
 
-### Prerequisites
+#### Prerequisites
 
 Ensure the following are installed:
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
 
-### Commands Overview
+#### Commands Overview
 
 #### Build and Start the Application
 
@@ -144,7 +151,7 @@ $ make stop
 
 ---
 
-### API Endpoints
+#### API Endpoints
 
 The `Makefile` provides predefined commands to call specific API endpoints.
 
@@ -203,7 +210,7 @@ To call an API endpoint, use one of the following commands:
 
 ---
 
-## Makefile Commands
+### Makefile Commands
 
 Here’s a summary of the `Makefile` commands:
 
@@ -221,19 +228,19 @@ Here’s a summary of the `Makefile` commands:
 
 ---
 
-## Notes
+### Notes
 
 - Make sure the environment variables in `.env` are configured correctly before starting the project.
 - The `Makefile` commands assume that the API endpoints are available on the base URL `http://localhost:5000/api`.
 
 For further assistance, please refer to the project documentation or contact the development team.
 
-# Specification for Node Deployment Integration
+## Specification for Node Deployment Integration
 
 For NAAS that provide Node Deployment service, users manually perform transaction signature without going through this source.
 When launching Node, NAAS needs to call API endpoint /get-config to get Verifier Address and necessary information first.
 Then, for each user operation on the Node on onchain, it is necessary to use API endpoint **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call the contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
 
-## Support interaction with Smart Contract with React
+### Support interaction with Smart Contract with React
 
 For detailed instructions on start, stop, delegate and revoke delegate on verifier node with ReactJS, please see detail documentation in `example` folder.
