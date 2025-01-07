@@ -1,6 +1,6 @@
 # Project Documentation
 
-This guide explains how to implement start/stop verifier node.
+This guide provides detailed instructions on how to start and stop the verifier node.
 
 ---
 
