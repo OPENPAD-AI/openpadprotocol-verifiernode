@@ -224,3 +224,8 @@ Here’s a summary of the `Makefile` commands:
 - The `Makefile` commands assume that the API endpoints are available on the base URL `http://localhost:5000/api`.
 
 For further assistance, please refer to the project documentation or contact the development team.
+
+
+# Implementing Node Start/Stop Verification with React
+
+For detailed instructions, please refer to the documentation located in the `example` folder.
