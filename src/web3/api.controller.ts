@@ -13,7 +13,8 @@ export class ApiController {
     return this.web3Service.nodeExit();
   }
   @Get('node-enter')
-  nodeStart() {
+  async nodeStart() {
+    await this.web3Service.onNodeSetup();
     return this.web3Service.onStart();
   }
   @Get('daily-uptime-statictis')
@@ -37,5 +38,19 @@ export class ApiController {
   @Get('get-node-list')
   getNodeList() {
     return this.web3Service.getNodeList();
+  }
+
+  @Get('get-config')
+  getConfig() {
+    return this.web3Service.getConfig();
+  }
+
+  @Get('get-verifier-signature-node-enter')
+  verifierSignatureNodeEnter() {
+    return this.web3Service.processVerifierSignatureNodeEnter();
+  }
+  @Get('get-verifier-signature-node-exit')
+  async verifierSignatureNodeExit() {
+    return this.web3Service.processVerifierSignatureNodeExit();
   }
 }
