@@ -15,7 +15,7 @@ export class Web3Service {
   public static privateKey = '';
   public static pubicKeyAddress = '';
   public static verifierAddress = '';
-  public static nodeType = 'Solo Operator'
+  public static nodeType = 'Solo Operator';
   constructor(private configService: ConfigService) {
     // if (!Web3Service.initialized) {
     //   this.getPrivateKey().then(() => {
@@ -41,7 +41,8 @@ export class Web3Service {
           ).address;
       }
     }
-    Web3Service.nodeType = this.configService.get<string>('NODE_TYPE') || 'Solo Operator'
+    Web3Service.nodeType =
+      this.configService.get<string>('NODE_TYPE') || 'Solo Operator';
 
     Web3Service.verifierAddress = await this.getVerifierAddress(
       Web3Service.pubicKeyAddress,
@@ -57,7 +58,7 @@ export class Web3Service {
       commission: Web3Service.commission,
       pubicKeyAddress: Web3Service.pubicKeyAddress,
       verifierAddress: Web3Service.verifierAddress,
-      nodeType: Web3Service.nodeType
+      nodeType: Web3Service.nodeType,
     };
   }
   async processVerifierSignatureNodeEnter() {
@@ -575,7 +576,7 @@ export class Web3Service {
           verifier: Web3Service.verifierAddress,
           claimmer: Web3Service.claimer || Web3Service.pubicKeyAddress,
           commisstionRate: Web3Service.commission,
-          type: Web3Service.nodeType
+          type: Web3Service.nodeType,
         },
 
         {
