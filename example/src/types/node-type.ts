@@ -15,7 +15,7 @@ export type NodeEnterSignatureType = {
   };
 }
 
-export type NftItemType = {
+export type LicenseKeyItemType = {
   id: string;
   tokenId: string;
   tier: number;

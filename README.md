@@ -103,6 +103,7 @@ Copy the example environment variable file and configure it:
 # PRIVATE_KEY=
 # CLAIMER_ADDRESS=
 # COMMISSION_RATE=
+# NODE_TYPE="Solo_Operator" || "Node Ops" || "Easy Node"
 $ cp .env.example .env
 ```
 

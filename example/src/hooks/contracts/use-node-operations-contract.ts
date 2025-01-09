@@ -16,7 +16,16 @@ export function useReadNodeOperationContract(address?: string, verifierWallet?: 
 
     const fetchNodeOperationData = async () => {
         await refetchNodeInfos();
+        await refetchDelegateWeightsData();
     };
+
+    const { data: delegateWeightsData, refetch: refetchDelegateWeightsData } = useReadContract({
+        abi: OPERATION_CONTRACT.abi,
+        address: OPERATION_CONTRACT.address,
+        functionName: 'delegationWeights',
+        args: [verifierWallet],
+        chainId: getCurrentChainId() as any,
+      });
 
     useEffect(() => {
         if (!address) return;
@@ -25,6 +34,8 @@ export function useReadNodeOperationContract(address?: string, verifierWallet?: 
 
     return {
         isActiveDelegate: nodeInfos ? nodeInfos[2] : false,
-        refetchNodeInfos
+        refetchNodeInfos,
+
+        delegateWeightsData: delegateWeightsData === undefined ? null : BigNumber((delegateWeightsData as any).toString()).toNumber(),
     };
 }
