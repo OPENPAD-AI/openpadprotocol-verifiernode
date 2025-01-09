@@ -1,5 +1,6 @@
 {
     "arbitrumSepoliaRpc": "https://arbitrum-sepolia-rpc.publicnode.com",
+    "BaseSepoliaTestnet": "https://base-sepolia-rpc.publicnode.com",
     "arbitrumMainnetRpc": "https://arb1.arbitrum.io/rpc",
     "SmcContractAbi": [
         {

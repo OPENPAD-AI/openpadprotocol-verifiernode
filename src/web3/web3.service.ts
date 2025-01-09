@@ -91,7 +91,7 @@ export class Web3Service {
     const network =
       process.env.NETWORK_ARBITRUM == 'production'
         ? Network.ARBITRUM_MAINNET
-        : Network.ARBITRUM_SEPOLIA;
+        : Network.BASE_SEPOLIA;
     const web3 = this.getWeb3(network);
 
     const SMCContractAbi = JSON.parse(
@@ -265,6 +265,7 @@ export class Web3Service {
     const networkConfigMap = {
       [Network.ARBITRUM_SEPOLIA]: 'arbitrumSepoliaRpc',
       [Network.ARBITRUM_MAINNET]: 'arbitrumMainnetRpc',
+      [Network.BASE_SEPOLIA]: 'BaseSepoliaTestnet',
     };
 
     const configKey = networkConfigMap[network];
