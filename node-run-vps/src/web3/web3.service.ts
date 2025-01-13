@@ -501,9 +501,9 @@ export class Web3Service {
     try {
       console.log('userAddress', userAddress);
       const nfts = await this.getNft(Web3Service.pubicKeyAddress);
-      const filteredArray = nfts.filter((item) => item.isDelegated === false);
+      // const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
-      const maxTierItem = filteredArray.reduce((maxItem, currentItem) => {
+      const maxTierItem = nfts.reduce((maxItem, currentItem) => {
         return currentItem.tier > maxItem.tier ? currentItem : maxItem;
       }, nfts[0]);
 
