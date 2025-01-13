@@ -409,6 +409,7 @@ export class Web3Service {
   }
   async nodeExit() {
     try {
+      console.log('Web3Service.verifierAddress', Web3Service.verifierAddress);
       if (Web3Service.verifierAddress) {
         const verifierSignature = await this.getVerifierSignatureNodeExit(
           Web3Service.verifierAddress,
@@ -498,14 +499,16 @@ export class Web3Service {
 
   async getVerifierByAddress(userAddress: string) {
     try {
-      console.log(
-        `${process.env.URL_API_OPENPAD}/node-ai-vps/get-verifier-by-address?address=${userAddress}`,
-      );
-      const response = await axios.get(
-        `${process.env.URL_API_OPENPAD}/node-ai-vps/get-verifier-by-address?address=${userAddress}`,
-      );
+      console.log('userAddress', userAddress);
+      const nfts = await this.getNft(Web3Service.pubicKeyAddress);
+      const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
-      return response.data.verifierAddress;
+      const maxTierItem = filteredArray.reduce((maxItem, currentItem) => {
+        return currentItem.tier > maxItem.tier ? currentItem : maxItem;
+      }, nfts[0]);
+
+      const tokenAddress = maxTierItem.tokenAddress;
+      return tokenAddress;
     } catch (error) {
       this.logger.error(error);
       return null;
@@ -514,7 +517,7 @@ export class Web3Service {
   async getVerifierSignatureNodeEnter(verifierAddress: string) {
     try {
       const response = await axios.get(
-        `${process.env.URL_API_OPENPAD}/node-ai-vps/node-enter-with-signature?verifierAddress=${verifierAddress}`,
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/node-enter-with-signature-nft?verifierAddress=${verifierAddress}`,
       );
       return response.data;
     } catch (error) {
@@ -525,7 +528,7 @@ export class Web3Service {
   async getVerifierSignatureNodeExit(verifierAddress: string) {
     try {
       const response = await axios.get(
-        `${process.env.URL_API_OPENPAD}/node-ai-vps/node-exit-with-signature?verifierAddress=${verifierAddress}`,
+        `${process.env.URL_API_OPENPAD}/node-ai-vps/node-exit-with-signature-nft?verifierAddress=${verifierAddress}`,
       );
       return response.data;
     } catch (error) {
