@@ -491,9 +491,11 @@ export class Web3Service {
       } else {
         this.logger.warn('No NFTs found for the given public key.');
       }
-      // const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
-      // const delegationWeights = this.fromWei(delegationWeightBigInt);
-      const shouldEncode = args.length != 1;
+      const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
+      const delegationWeights = delegationWeightBigInt.toString();
+      const shouldEncode =
+        delegationWeights != '1' ||
+        (delegationWeights == '1' && nfts.length != 1);
 
       if (shouldEncode) {
         const method = SMCContract.methods.nodeExitWithSignature(
