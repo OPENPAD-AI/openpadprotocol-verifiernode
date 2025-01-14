@@ -9,7 +9,7 @@ DAILY_REWARD_ENDPOINT=/daily-reward-stats
 DELEGATION_STATS_ENDPOINT=/get-delegation-stats
 NODE_EXIT_ENDPOINT=/node-exit
 NODE_ENTER_ENDPOINT=/node-exit
-NODE_LIST_ENDPOINT=/node-list
+NODE_LIST_ENDPOINT=/get-node-list
 
 
 
