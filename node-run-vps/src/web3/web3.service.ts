@@ -488,16 +488,21 @@ export class Web3Service {
       } else {
         this.logger.warn('No NFTs found for the given public key.');
       }
+      const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
 
-      const method = SMCContract.methods.nodeExitWithSignature(
-        signature.expiredAt,
-        signature.data.signer,
-        signature.data.v,
-        signature.data.r,
-        signature.data.s,
-      );
-      const encode = method.encodeABI();
-      args.push(encode);
+      const delegationWeights = this.fromWei(delegationWeightBigInt);
+      if (delegationWeights == '1' && nfts.length != 1) {
+        const method = SMCContract.methods.nodeExitWithSignature(
+          signature.expiredAt,
+          signature.data.signer,
+          signature.data.v,
+          signature.data.r,
+          signature.data.s,
+        );
+        const encode = method.encodeABI();
+        args.push(encode);
+      }
+
       const encodeMuticall = SMCContract.methods.multicall(args);
 
       const currentGasPrice = await web3.eth.getGasPrice();
