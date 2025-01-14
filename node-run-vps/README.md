@@ -100,6 +100,7 @@ Copy the example environment variable file and configure it:
 
 ```bash
 # change environment
+# PUBLIC_KEY=
 # PRIVATE_KEY=
 # CLAIMER_ADDRESS=
 # COMMISSION_RATE=

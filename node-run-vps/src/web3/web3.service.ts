@@ -499,8 +499,7 @@ export class Web3Service {
 
   async getVerifierByAddress(userAddress: string) {
     try {
-      console.log('userAddress', userAddress);
-      const nfts = await this.getNft(Web3Service.pubicKeyAddress);
+      const nfts = await this.getNft(userAddress);
       // const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
       const maxTierItem = nfts.reduce((maxItem, currentItem) => {
