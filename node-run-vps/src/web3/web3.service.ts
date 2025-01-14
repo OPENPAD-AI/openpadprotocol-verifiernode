@@ -315,8 +315,11 @@ export class Web3Service {
         throw new Error(`Unknown network: ${chainId}`);
     }
   }
-  fromWei(number: string): string {
-    return this.web3.utils.fromWei(number, 'ether');
+  fromWei(number: string) {
+    const etherValue = this.web3.utils.fromWei(number, 'ether');
+
+    // Format the ether value with the desired number of decimals
+    return parseFloat(etherValue).toFixed(18);
   }
   async undelegate() {
     try {
@@ -488,10 +491,12 @@ export class Web3Service {
       } else {
         this.logger.warn('No NFTs found for the given public key.');
       }
-      const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
+      // const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
 
-      const delegationWeights = this.fromWei(delegationWeightBigInt);
-      if (delegationWeights == '1' && nfts.length != 1) {
+      // const delegationWeights = this.fromWei(delegationWeightBigInt);
+      const shouldEncode = nfts.length != 1;
+
+      if (shouldEncode) {
         const method = SMCContract.methods.nodeExitWithSignature(
           signature.expiredAt,
           signature.data.signer,
