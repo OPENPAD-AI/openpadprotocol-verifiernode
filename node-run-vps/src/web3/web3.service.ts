@@ -495,7 +495,7 @@ export class Web3Service {
       const delegationWeights = delegationWeightBigInt.toString();
       const shouldEncode =
         delegationWeights != '1' ||
-        (delegationWeights == '1' && nfts.length != 1);
+        (delegationWeights == '1' && args.length != 1);
 
       if (shouldEncode) {
         const method = SMCContract.methods.nodeExitWithSignature(
