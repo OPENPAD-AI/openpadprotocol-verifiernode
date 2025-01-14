@@ -131,21 +131,7 @@ export class Web3Service {
       this.logger.log('Web3Service initialized.');
       await this.getConfig();
       Web3Service.initialized = true;
-
-      const nftMax = this.configService.get<string>('NFT_MAX')
-        ? +this.configService.get<string>('NFT_MAX')
-        : null;
-
-      let nfts = await this.getNft(Web3Service.pubicKeyAddress);
-
-      const filteredNfts = nfts.filter((item) => item.isDelegated === false);
-
-      if (nftMax !== null && nftMax > 0) {
-        nfts = filteredNfts.slice(0, nftMax);
-      } else {
-        nfts = filteredNfts;
-      }
-
+      const nfts = await this.filterNft();
       if (nfts && nfts.length > 0) {
         if (Web3Service.verifierAddress) {
           const nftIds = nfts.map((item) => item.tokenId);
@@ -184,7 +170,22 @@ export class Web3Service {
       throw error;
     }
   }
+  async filterNft() {
+    const nftMax = this.configService.get<string>('NFT_MAX')
+      ? +this.configService.get<string>('NFT_MAX')
+      : null;
 
+    let nfts = await this.getNft(Web3Service.pubicKeyAddress);
+
+    const filteredArray = nfts.filter((item) => item.isDelegated === false);
+
+    if (nftMax !== null && nftMax > 0) {
+      nfts = filteredArray.slice(0, nftMax);
+    } else {
+      nfts = filteredArray;
+    }
+    return nfts || [];
+  }
   getWeb3(network?: Network) {
     const rpc = this.handleRpc(network);
     return new Web3(rpc);
@@ -523,15 +524,15 @@ export class Web3Service {
 
       const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
+      const maxTierItem = filteredArray.reduce((maxItem, currentItem) => {
+        return currentItem.tier > maxItem.tier ? currentItem : maxItem;
+      }, filteredArray[0]);
+
       if (nftMax !== null && nftMax > 0) {
         nfts = filteredArray.slice(0, nftMax);
       } else {
         nfts = filteredArray;
       }
-
-      const maxTierItem = nfts.reduce((maxItem, currentItem) => {
-        return currentItem.tier > maxItem.tier ? currentItem : maxItem;
-      }, nfts[0]);
 
       const tokenAddress = maxTierItem.tokenAddress;
       return tokenAddress;
