@@ -211,17 +211,17 @@ export class Web3Service {
         console.log('Node running status: ', nodeInfos['active']);
         return true;
       }
-      const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
+      // const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
 
-      const delegationWeights = this.fromWei(delegationWeightBigInt);
+      // const delegationWeights = this.fromWei(delegationWeightBigInt);
       const args = [];
-      if (delegationWeights == '0') {
-        nftIds.map((tokenId) => {
-          const method = SMCContract.methods.delegate(tokenId, verifierAddress);
-          const encodeNft = method.encodeABI();
-          args.push(encodeNft);
-        });
-      }
+      // if (delegationWeights == '0') {
+      nftIds.map((tokenId) => {
+        const method = SMCContract.methods.delegate(tokenId, verifierAddress);
+        const encodeNft = method.encodeABI();
+        args.push(encodeNft);
+      });
+      // }
       // Prepare the contract methodcon
       const method = SMCContract.methods.nodeEnterWithSignature(
         verifierAddress,
