@@ -179,6 +179,10 @@ export class Web3Service {
 
     const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
+    filteredArray.reduce((maxItem, currentItem) => {
+      return currentItem.tier > maxItem.tier ? currentItem : maxItem;
+    }, filteredArray[0]);
+
     if (nftMax !== null && nftMax > 0) {
       nfts = filteredArray.slice(0, nftMax);
     } else {
