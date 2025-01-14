@@ -492,7 +492,6 @@ export class Web3Service {
         this.logger.warn('No NFTs found for the given public key.');
       }
       // const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
-
       // const delegationWeights = this.fromWei(delegationWeightBigInt);
       const shouldEncode = nfts.length != 1;
 
