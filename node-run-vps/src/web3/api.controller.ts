@@ -53,4 +53,9 @@ export class ApiController {
   async verifierSignatureNodeExit() {
     return this.web3Service.processVerifierSignatureNodeExit();
   }
+
+  @Get('get-my-nfts')
+  async getNodeInfos() {
+    return await this.web3Service.getMyNfts();
+  }
 }

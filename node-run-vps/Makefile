@@ -10,6 +10,7 @@ DELEGATION_STATS_ENDPOINT=/get-delegation-stats
 NODE_EXIT_ENDPOINT=/node-exit
 NODE_ENTER_ENDPOINT=/node-exit
 NODE_LIST_ENDPOINT=/get-node-list
+MY_NFT_ENDPOINT=/get-my-nfts
 UNDELEGATE=/undelegate
 
 
@@ -73,3 +74,7 @@ call-node-enter:
 call-undelegate:
 	@echo "Calling API for undelegate"
 	$(CALL_API_CMD) $(API_URL)$(UNDELEGATE)
+# Call get my nfts
+call-my-nfts:
+	@echo "Calling API get my nfts"
+	$(CALL_API_CMD) $(API_URL)$(MY_NFT_ENDPOINT)

@@ -682,4 +682,8 @@ export class Web3Service {
 
     return response.data;
   }
+  async getMyNfts() {
+    const nfts = await this.getNft(Web3Service.pubicKeyAddress);
+    return nfts;
+  }
 }

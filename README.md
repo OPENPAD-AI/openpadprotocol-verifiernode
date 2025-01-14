@@ -1,11 +1,16 @@
 # Project Documentation
 
-This README provides instructions on how to set up and run Openpad Node in 2 directions: Node Operator and Node Deployment
+This README provides instructions on how to set up and run Openpad Node in 2 concepts: Node Operator and Node Deployment.
+
+- In case of Node Operator, Node Owner setup private key of NFT Owner Address on VPS. All operations are executed on VPS.
+- In another way, Node Deployment is usually a service offered by NAAS Platforms (Node As A Service) to deploy Node to users. Users activate and operate Node through UI of Platform.
+
+Document Structure:
 
 - [Hardware Requirement](#hardware-requirements)
 - [Software Installation](#setup-nodejs)
 - [Node Operator Guide](#node-operator-guide)
-- [Specification for Node Deployment integration](#specification-for-node-deployment-integration)
+- [Node Deployment Integration](#specification-for-node-deployment-integration)
 
 ---
 
@@ -179,6 +184,7 @@ http://localhost:5000/api
 - **Get verifier address**: `/get-config`
 - **Get verifier signature node enter**: `/get-verifier-signature-node-enter`
 - **Get verifier signature node exit**: `/get-verifier-signature-node-exit`
+- **Get my nfts**: `/get-my-nfts`
 
 #### Call API Commands
 
@@ -215,8 +221,14 @@ To call an API endpoint, use one of the following commands:
   $ make call-node-list
   ```
 - **Undelegate /revoke**:
+
   ```bash
   $ make call-undelegate
+  ```
+
+- **Call get my nfts**:
+  ```bash
+  $ make call-my-nfts
   ```
 
 ---
@@ -237,6 +249,7 @@ Here’s a summary of the `Makefile` commands:
 | `make call-node-enter`       | Call the Node Enter API                     |
 | `make call-node-list`        | Call the Node list with number delegate API |
 | `make call-undelegate`       | Call the Undelegate                         |
+| `make call-my-nfts`          | Call my nfts                                |
 
 ---
 
@@ -247,12 +260,14 @@ Here’s a summary of the `Makefile` commands:
 
 For further assistance, please refer to the project documentation or contact the development team.
 
-## Specification for Node Deployment Integration
+## Node Deployment Integration
 
-For NAAS that provide Node Deployment service, users manually perform transaction signature without going through this source.
-When launching Node, NAAS needs to call API endpoint /get-config to get Verifier Address and necessary information first.
-Then, for each user operation on the Node on onchain, it is necessary to use API endpoint **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call the contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
+For NAAS that provide Node Deployment Service, where users manually sign transaction to Blockhain Network without through this source.
 
-### Support interaction with Smart Contract with React
+- When launch, FE needs to post NFT Owner Address. Through that, BE call API end point **MY_NFT_ENDPOINT=/get-my-nfts** to get list of NFTs and Verifier Address according to each NFT Token ID.
+- When start node, user select NFT to activate Node. FE use corresponding Verifier Address. Then, FE calls 2 functions on Smart Contract: delegate NFT to Verfier Address and activate node with that Verifier Address.
+- For each user operation on the Node on onchain, it is necessary to use API endpoint **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call the contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
 
-For detailed instructions on start, stop, delegate and revoke delegate on verifier node with ReactJS, please see detail documentation in `example` folder.
+### Support interaction with Smart Contract (React)
+
+For detailed instructions on start, stop, delegate and revoke delegate on verifier node with ReactJS, please see detail documentation in example folder.
