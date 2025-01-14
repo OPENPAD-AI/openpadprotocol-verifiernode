@@ -109,6 +109,10 @@ Copy the example environment variable file and configure it:
 $ cp .env.example .env
 ```
 
+#### Configure the number of nodes you want to delegate
+
+NFT_MAX = 1 (number of nodes to delegate)
+
 #### Compile and Run the Project
 
 Run the application using one of the following modes:
