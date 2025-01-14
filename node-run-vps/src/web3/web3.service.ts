@@ -179,15 +179,14 @@ export class Web3Service {
 
     const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
-    filteredArray.reduce((maxItem, currentItem) => {
-      return currentItem.tier > maxItem.tier ? currentItem : maxItem;
-    }, filteredArray[0]);
+    const sortedArray = filteredArray.sort((a, b) => b.tier - a.tier);
 
     if (nftMax !== null && nftMax > 0) {
-      nfts = filteredArray.slice(0, nftMax);
+      nfts = sortedArray.slice(0, nftMax);
     } else {
-      nfts = filteredArray;
+      nfts = sortedArray;
     }
+
     return nfts || [];
   }
   getWeb3(network?: Network) {
@@ -435,6 +434,8 @@ export class Web3Service {
         const verifierSignature = await this.getVerifierSignatureNodeExit(
           Web3Service.verifierAddress,
         );
+        console.log('verifierSignature 1', verifierSignature);
+
         await this.nodeExitWithSignature(
           Web3Service.pubicKeyAddress,
           Web3Service.privateKey,
