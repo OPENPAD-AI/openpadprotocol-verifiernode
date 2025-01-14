@@ -431,7 +431,6 @@ export class Web3Service {
         const verifierSignature = await this.getVerifierSignatureNodeExit(
           Web3Service.verifierAddress,
         );
-        this.undelegate();
         await this.nodeExitWithSignature(
           Web3Service.pubicKeyAddress,
           Web3Service.privateKey,
@@ -460,6 +459,36 @@ export class Web3Service {
         console.log(`Node status: ${nodeInfos['active']}, Not use undelegate`);
         return true;
       }
+      const args = [];
+      const nfts = await this.getNft(Web3Service.pubicKeyAddress);
+      if (nfts && nfts.length > 0) {
+        if (Web3Service.verifierAddress) {
+          const filteredNfts = nfts.filter(
+            (item) => item.verifierAddress == Web3Service.verifierAddress,
+          );
+          const nftIds = filteredNfts.map((item) => item.tokenId);
+
+          if (nftIds.length > 0) {
+            nftIds.map((tokenId) => {
+              const method = SMCContract.methods.undelegate(
+                tokenId,
+                verifierAddress,
+              );
+              const encodeNft = method.encodeABI();
+              args.push(encodeNft);
+            });
+          } else {
+            this.logger.warn('No undelegated NFTs found.');
+          }
+        } else {
+          this.logger.warn(
+            'Verifier address not provided. Skipping undelegate.',
+          );
+        }
+      } else {
+        this.logger.warn('No NFTs found for the given public key.');
+      }
+
       const method = SMCContract.methods.nodeExitWithSignature(
         signature.expiredAt,
         signature.data.signer,
@@ -467,36 +496,37 @@ export class Web3Service {
         signature.data.r,
         signature.data.s,
       );
+      const encode = method.encodeABI();
+      args.push(encode);
+      const encodeMuticall = SMCContract.methods.multicall(args);
+
       const currentGasPrice = await web3.eth.getGasPrice();
       const from = pubicKeyAddress;
       const nonce = await web3.eth.getTransactionCount(from, 'pending');
-
       // Create transaction object
       const tx: any = {
         nonce,
         from,
         to: contractAddress,
         gasPrice: currentGasPrice,
-        data: method.encodeABI(),
+        data: encodeMuticall.encodeABI(),
       };
-      // const reason = await web3.eth.call(tx).catch((error) => error.message);
-      // console.error('Revert Reason:', reason);
+
+      const reason = await web3.eth.call(tx).catch((error) => error.message);
+      console.error('Revert Reason:', reason);
       const estimatedGas = await web3.eth.estimateGas(tx);
       tx.gas = Math.round(Number(estimatedGas) * 1.2);
 
-      // Sign the transaction
       const signed = await web3.eth.accounts.signTransaction(tx, privateKey);
 
-      // Send the transaction
       const receipt = await web3.eth.sendSignedTransaction(
         signed.rawTransaction!,
       );
 
       console.log(
-        'Stop nodeEnter successful with Txhash:',
+        '- Start nodeExit successful with Txhash:',
         receipt.transactionHash,
       );
-      return receipt.transactionHash;
     } catch (error) {
       console.log(error);
       throw error;
