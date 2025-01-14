@@ -493,7 +493,7 @@ export class Web3Service {
       }
       // const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
       // const delegationWeights = this.fromWei(delegationWeightBigInt);
-      const shouldEncode = nfts.length != 1;
+      const shouldEncode = args.length != 1;
 
       if (shouldEncode) {
         const method = SMCContract.methods.nodeExitWithSignature(
