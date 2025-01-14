@@ -176,7 +176,6 @@ export class Web3Service {
       : null;
 
     let nfts = await this.getNft(Web3Service.pubicKeyAddress);
-
     const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
     const sortedArray = filteredArray.sort((a, b) => b.tier - a.tier);
@@ -336,22 +335,20 @@ export class Web3Service {
         }
       }
 
-      const verifierAddress = await this.getVerifierByAddress(
-        Web3Service.pubicKeyAddress,
-      );
-
       const nfts = await this.getNft(Web3Service.pubicKeyAddress);
 
       if (nfts && nfts.length > 0) {
-        if (verifierAddress) {
-          const filteredNfts = nfts.filter((item) => item.isDelegated === true);
+        if (Web3Service.verifierAddress) {
+          const filteredNfts = nfts.filter(
+            (item) => item.verifierAddress == Web3Service.verifierAddress,
+          );
           const nftIds = filteredNfts.map((item) => item.tokenId);
 
           if (nftIds.length > 0) {
             await this.undelegateWithContract(
               Web3Service.pubicKeyAddress,
               Web3Service.privateKey,
-              verifierAddress,
+              Web3Service.verifierAddress,
               nftIds,
             );
           } else {
@@ -434,7 +431,6 @@ export class Web3Service {
         const verifierSignature = await this.getVerifierSignatureNodeExit(
           Web3Service.verifierAddress,
         );
-        console.log('verifierSignature 1', verifierSignature);
 
         await this.nodeExitWithSignature(
           Web3Service.pubicKeyAddress,
