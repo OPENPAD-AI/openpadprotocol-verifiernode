@@ -340,7 +340,9 @@ export class Web3Service {
       if (nfts && nfts.length > 0) {
         if (Web3Service.verifierAddress) {
           const filteredNfts = nfts.filter(
-            (item) => item.verifierAddress == Web3Service.verifierAddress,
+            (item) =>
+              item.verifierAddress == Web3Service.verifierAddress &&
+              item.userAddress == Web3Service.pubicKeyAddress,
           );
           const nftIds = filteredNfts.map((item) => item.tokenId);
 

@@ -10,6 +10,8 @@ DELEGATION_STATS_ENDPOINT=/get-delegation-stats
 NODE_EXIT_ENDPOINT=/node-exit
 NODE_ENTER_ENDPOINT=/node-exit
 NODE_LIST_ENDPOINT=/get-node-list
+UNDELEGATE=/undelegate
+
 
 
 
@@ -66,3 +68,8 @@ call-node-enter:
 call-node-enter:
 	@echo "Calling API for Delegation Stats..."
 	$(CALL_API_CMD) $(API_URL)$(NODE_LIST_ENDPOINT)
+
+# Call the Undelegate
+call-undelegate:
+	@echo "Calling API for undelegate"
+	$(CALL_API_CMD) $(API_URL)$(UNDELEGATE)

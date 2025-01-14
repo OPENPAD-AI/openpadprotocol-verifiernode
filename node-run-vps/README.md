@@ -210,6 +210,10 @@ To call an API endpoint, use one of the following commands:
   ```bash
   $ make call-node-list
   ```
+- **Undelegate /revoke**:
+  ```bash
+  $ make call-undelegate
+  ```
 
 ---
 
@@ -228,6 +232,7 @@ Here’s a summary of the `Makefile` commands:
 | `make call-node-exit`        | Call the Node Exit API                      |
 | `make call-node-enter`       | Call the Node Enter API                     |
 | `make call-node-list`        | Call the Node list with number delegate API |
+| `make call-undelegate`       | Call the Undelegate                         |
 
 ---
 
