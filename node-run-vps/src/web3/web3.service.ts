@@ -431,7 +431,7 @@ export class Web3Service {
         const verifierSignature = await this.getVerifierSignatureNodeExit(
           Web3Service.verifierAddress,
         );
-
+        this.undelegate();
         await this.nodeExitWithSignature(
           Web3Service.pubicKeyAddress,
           Web3Service.privateKey,
