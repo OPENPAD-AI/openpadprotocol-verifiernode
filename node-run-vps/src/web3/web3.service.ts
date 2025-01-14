@@ -132,7 +132,20 @@ export class Web3Service {
       await this.getConfig();
       Web3Service.initialized = true;
 
-      const nfts = await this.getNft(Web3Service.pubicKeyAddress);
+      const nftMax = this.configService.get<string>('NFT_MAX')
+        ? +this.configService.get<string>('NFT_MAX')
+        : null;
+
+      let nfts = await this.getNft(Web3Service.pubicKeyAddress);
+
+      const filteredNfts = nfts.filter((item) => item.isDelegated === false);
+
+      if (nftMax !== null && nftMax > 0) {
+        nfts = filteredNfts.slice(0, nftMax);
+      } else {
+        nfts = filteredNfts;
+      }
+
       if (nfts && nfts.length > 0) {
         if (Web3Service.verifierAddress) {
           const nftIds = nfts.map((item) => item.tokenId);
@@ -148,6 +161,7 @@ export class Web3Service {
             );
             return true;
           }
+
           await this.nodeEnterWithSignature(
             Web3Service.pubicKeyAddress,
             Web3Service.privateKey,
@@ -161,7 +175,7 @@ export class Web3Service {
           );
         }
       } else {
-        this.logger.warn('- NFT node found, Skipping nodeEnter.');
+        this.logger.warn('- No valid NFTs found, Skipping nodeEnter.');
       }
 
       return;
@@ -499,8 +513,19 @@ export class Web3Service {
 
   async getVerifierByAddress(userAddress: string) {
     try {
-      const nfts = await this.getNft(userAddress);
-      // const filteredArray = nfts.filter((item) => item.isDelegated === false);
+      let nftMax = this.configService.get<string>('NFT_MAX')
+        ? +this.configService.get<string>('NFT_MAX')
+        : null;
+
+      let nfts = await this.getNft(userAddress);
+
+      const filteredArray = nfts.filter((item) => item.isDelegated === false);
+
+      if (nftMax !== null && nftMax > 0) {
+        nfts = filteredArray.slice(0, nftMax);
+      } else {
+        nfts = filteredArray;
+      }
 
       const maxTierItem = nfts.reduce((maxItem, currentItem) => {
         return currentItem.tier > maxItem.tier ? currentItem : maxItem;
@@ -513,6 +538,7 @@ export class Web3Service {
       return null;
     }
   }
+
   async getVerifierSignatureNodeEnter(verifierAddress: string) {
     try {
       const response = await axios.get(

@@ -101,6 +101,7 @@ Copy the example environment variable file and configure it:
 ```bash
 # change environment
 # PUBLIC_KEY=
+# NFT_MAX=
 # PRIVATE_KEY=
 # CLAIMER_ADDRESS=
 # COMMISSION_RATE=
