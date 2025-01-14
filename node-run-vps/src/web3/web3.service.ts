@@ -318,13 +318,6 @@ export class Web3Service {
   async undelegate() {
     try {
       this.logger.log('Web3Service initialized.');
-      // const privateKey = this.configService.get<string>('PRIVATE_KEY');
-      // let pubicKeyAddress = '';
-      // if (!privateKey.startsWith('0x')) {
-      //   pubicKeyAddress = this.web3.eth.accounts.privateKeyToAccount(
-      //     '0x' + privateKey,
-      //   ).address;
-      // }
 
       if (this.configService.get<string>('PUBLIC_KEY')) {
         Web3Service.pubicKeyAddress = this.configService
@@ -338,27 +331,35 @@ export class Web3Service {
             ).address;
         }
       }
+
       const verifierAddress = await this.getVerifierByAddress(
         Web3Service.pubicKeyAddress,
       );
+
       const nfts = await this.getNft(Web3Service.pubicKeyAddress);
+
       if (nfts && nfts.length > 0) {
         if (verifierAddress) {
-          const nftIds = nfts.map((item) => item.tokenId);
+          const filteredNfts = nfts.filter((item) => item.isDelegated === true);
+          const nftIds = filteredNfts.map((item) => item.tokenId);
 
-          await this.undelegateWithContract(
-            Web3Service.pubicKeyAddress,
-            Web3Service.privateKey,
-            verifierAddress,
-            nftIds,
-          );
+          if (nftIds.length > 0) {
+            await this.undelegateWithContract(
+              Web3Service.pubicKeyAddress,
+              Web3Service.privateKey,
+              verifierAddress,
+              nftIds,
+            );
+          } else {
+            this.logger.warn('No undelegated NFTs found.');
+          }
         } else {
           this.logger.warn(
             'Verifier address not provided. Skipping undelegate.',
           );
         }
       } else {
-        this.logger.warn('NFT node found');
+        this.logger.warn('No NFTs found for the given public key.');
       }
 
       return;
@@ -367,6 +368,7 @@ export class Web3Service {
       throw error;
     }
   }
+
   async undelegateWithContract(
     pubicKeyAddress: string,
     privateKey: string,
