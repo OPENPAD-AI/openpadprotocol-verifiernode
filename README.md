@@ -127,7 +127,8 @@ Run the application using one of the following modes:
 $ npm run build
 
 # Production mode
-$ PRIVATE_KEY= CLAIMER_ADDRESS= COMMISSION_RATE=10 npm run start:prod
+## Pass the private key in clear text
+$ PRIVATE_KEY=<Your Private Key> PUBLIC_KEY=<Your Public Key> CLAIMER_ADDRESS=<Your claimer address> COMMISSION_RATE=10 npm run start:prod
 ```
 
 ---
