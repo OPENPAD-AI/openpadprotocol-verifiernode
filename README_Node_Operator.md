@@ -257,4 +257,11 @@ Here’s a summary of the `Makefile` commands:
 - Make sure the environment variables in `.env` are configured correctly before starting the project.
 - The `Makefile` commands assume that the API endpoints are available on the base URL `http://localhost:5000/api`.
 
+In case of using your Verifier Address, please register with us.
+- Before starting node, you need to call API "/get-my-nfts" to get list of NFT and Verifier Address that you have registed
+- When starting node and stopping node, you need to call API "/get-verifier-signature-node-enter" || "/get-verifier-signature-node-exit" to get signature and then call functions
+- For start node: call contract function in sequence "delegate" then "nodeEnterWithSignature", you can use function "multicall" to call these 2 functions
+- For stop node: Call function "nodeExitWithSignature".
+- undelegate NFT: call function 'undelegate'
+
 For further assistance, please refer to the project documentation or contact the development team.
