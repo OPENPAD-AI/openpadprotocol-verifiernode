@@ -1,4 +1,4 @@
-# Project Documentation
+# Node Operator Documentation
 
 This README provides instructions on how to set up and run Openpad Node as a Node Operator
 
