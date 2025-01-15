@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { Network, ProjectType } from 'src/utils/constant';
 import { Cron } from '@nestjs/schedule';
 import axios from 'axios';
+import { ethers } from 'ethers';
+import { VerificationUtils } from 'src/utils/verificationUtils';
 
 @Injectable()
 export class Web3Service {
@@ -75,6 +77,7 @@ export class Web3Service {
     }
     return verifierSignature;
   }
+
   async processVerifierSignatureNodeExit() {
     const verifierSignature = await this.getVerifierSignatureNodeExit(
       Web3Service.verifierAddress,
@@ -136,9 +139,10 @@ export class Web3Service {
         if (Web3Service.verifierAddress) {
           const nftIds = nfts.map((item) => item.tokenId);
 
-          const verifierSignature = await this.getVerifierSignatureNodeEnter(
-            Web3Service.verifierAddress,
-          );
+          // const verifierSignature = await this.getVerifierSignatureNodeEnter(
+          //   Web3Service.verifierAddress,
+          // );
+          const verifierSignature = await this.genNodeEnterWithSignature();
 
           if (!verifierSignature) {
             console.log(
@@ -202,7 +206,6 @@ export class Web3Service {
     nftIds: string[],
   ) {
     try {
-      // Select the network based on environment variable
       const { contractAddress, SMCContract, web3 } = await this.getNetWork();
       const nodeInfos = await SMCContract.methods
         .nodeInfos(verifierAddress)
@@ -212,18 +215,13 @@ export class Web3Service {
         console.log('Node running status: ', nodeInfos['active']);
         return true;
       }
-      // const delegationWeightBigInt = await this.getNodeInfos(verifierAddress);
 
-      // const delegationWeights = this.fromWei(delegationWeightBigInt);
       const args = [];
-      // if (delegationWeights == '0') {
       nftIds.map((tokenId) => {
         const method = SMCContract.methods.delegate(tokenId, verifierAddress);
         const encodeNft = method.encodeABI();
         args.push(encodeNft);
       });
-      // }
-      // Prepare the contract methodcon
       const method = SMCContract.methods.nodeEnterWithSignature(
         verifierAddress,
         signature.expiredAt,
@@ -434,9 +432,10 @@ export class Web3Service {
     try {
       console.log('Web3Service.verifierAddress', Web3Service.verifierAddress);
       if (Web3Service.verifierAddress) {
-        const verifierSignature = await this.getVerifierSignatureNodeExit(
-          Web3Service.verifierAddress,
-        );
+        // const verifierSignature = await this.getVerifierSignatureNodeExit(
+        //   Web3Service.verifierAddress,
+        // );
+        const verifierSignature = await this.genNodeExitWithSignature();
         if (Web3Service.privateKey) {
           await this.nodeExitWithSignature(
             Web3Service.pubicKeyAddress,
@@ -690,5 +689,46 @@ export class Web3Service {
   async getMyNfts() {
     const nfts = await this.getNft(Web3Service.pubicKeyAddress);
     return nfts;
+  }
+
+  async genNodeEnterWithSignature() {
+    try {
+      const expiredAt = Math.floor(Date.now() / 1000) + 60 * 60;
+      const charlie = new ethers.Wallet(Web3Service.privateKey);
+      //ChainID.BASE_SEPOLIA_TESTNET = 84532
+      //ChainID.ARBITRUM_MAINNET = 42161
+      const chainId = process.env.NETWORK_ARBITRUM ? 84532 : 42161;
+      const signature = await VerificationUtils.signNodeEnter(
+        charlie,
+        chainId,
+        charlie.address,
+        expiredAt,
+      );
+
+      return { data: signature, expiredAt };
+    } catch (error: any) {
+      console.error('Error message:', error.message);
+      return error;
+    }
+  }
+  async genNodeExitWithSignature() {
+    try {
+      const expiredAt = Math.floor(Date.now() / 1000) + 60 * 60;
+
+      const charlie = new ethers.Wallet(Web3Service.privateKey);
+
+      const chainId = process.env.NETWORK_ARBITRUM ? 84532 : 42161;
+      const signature = await VerificationUtils.signNodeExit(
+        charlie,
+        chainId,
+
+        expiredAt,
+      );
+
+      return { data: signature, expiredAt };
+    } catch (error: any) {
+      console.error('Error message:', error.message);
+      return error;
+    }
   }
 }

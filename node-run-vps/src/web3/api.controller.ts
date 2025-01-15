@@ -45,15 +45,23 @@ export class ApiController {
     return this.web3Service.getConfig();
   }
 
-  @Get('get-verifier-signature-node-enter')
-  verifierSignatureNodeEnter() {
+  @Get('get-verifier-nft-signature-node-enter')
+  verifierNftSignatureNodeEnter() {
     return this.web3Service.processVerifierSignatureNodeEnter();
   }
-  @Get('get-verifier-signature-node-exit')
-  async verifierSignatureNodeExit() {
+  @Get('get-verifier-nft-signature-node-exit')
+  async verifierNftSignatureNodeExit() {
     return this.web3Service.processVerifierSignatureNodeExit();
   }
 
+  @Get('get-verifier-signature-node-enter')
+  verifierSignatureNodeEnter() {
+    return this.web3Service.genNodeEnterWithSignature();
+  }
+  @Get('get-verifier-signature-node-exit')
+  verifierSignatureNodeExit() {
+    return this.web3Service.genNodeExitWithSignature();
+  }
   @Get('get-my-nfts')
   async getNodeInfos() {
     return await this.web3Service.getMyNfts();
