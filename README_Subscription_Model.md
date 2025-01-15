@@ -8,7 +8,7 @@ Document Structure:
 
 - [Hardware Requirement](#hardware-requirements)
 - [Software Installation](#setup-nodejs)
-- [Node Deployment Integration](#node-deployment-integration)
+- [NAAS Platform Integration](#node-deployment-integration)
 
 ---
 
@@ -182,9 +182,9 @@ Here’s a summary of the `Makefile` commands:
 
 For further assistance, please refer to the project documentation or contact the development team.
 
-## Node Deployment Integration
+## NAAS Platform Integration
 
-For NAAS that provide Node Deployment Service, where users manually sign transaction to Blockhain Network without through this source.
+For NAAS that provide Subcription Model, where users manually sign transaction to Blockhain Network on Platform UI.
 
 - When launch, FE needs to post NFT Owner Address. Through that, BE call API end point **MY_NFT_ENDPOINT=/get-my-nfts** to get list of NFTs and Verifier Address according to each NFT Token ID.
 - When start node, user select NFT to activate Node. FE use corresponding Verifier Address. Then, FE calls 2 functions on Smart Contract: delegate NFT to Verfier Address and activate node with that Verifier Address.
