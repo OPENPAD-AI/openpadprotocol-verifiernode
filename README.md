@@ -10,7 +10,7 @@ Document Structure:
 - [Hardware Requirement](#hardware-requirements)
 - [Software Installation](#setup-nodejs)
 - [Node Operator Guide](#node-operator-guide)
-- [Node Deployment Integration](#specification-for-node-deployment-integration)
+- [Node Deployment Integration](#node-deployment-integration)
 
 ---
 
