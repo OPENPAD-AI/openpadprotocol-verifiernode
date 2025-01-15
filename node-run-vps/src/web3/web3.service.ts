@@ -147,14 +147,15 @@ export class Web3Service {
             );
             return true;
           }
-
-          await this.nodeEnterWithSignature(
-            Web3Service.pubicKeyAddress,
-            Web3Service.privateKey,
-            verifierSignature,
-            Web3Service.verifierAddress,
-            nftIds,
-          );
+          if (Web3Service.privateKey) {
+            await this.nodeEnterWithSignature(
+              Web3Service.pubicKeyAddress,
+              Web3Service.privateKey,
+              verifierSignature,
+              Web3Service.verifierAddress,
+              nftIds,
+            );
+          }
         } else {
           this.logger.warn(
             '- Verifier address not provided. Skipping nodeEnter.',
@@ -348,12 +349,14 @@ export class Web3Service {
           const nftIds = filteredNfts.map((item) => item.tokenId);
 
           if (nftIds.length > 0) {
-            await this.undelegateWithContract(
-              Web3Service.pubicKeyAddress,
-              Web3Service.privateKey,
-              Web3Service.verifierAddress,
-              nftIds,
-            );
+            if (Web3Service.privateKey) {
+              await this.undelegateWithContract(
+                Web3Service.pubicKeyAddress,
+                Web3Service.privateKey,
+                Web3Service.verifierAddress,
+                nftIds,
+              );
+            }
           } else {
             this.logger.warn('No undelegated NFTs found.');
           }
@@ -434,12 +437,14 @@ export class Web3Service {
         const verifierSignature = await this.getVerifierSignatureNodeExit(
           Web3Service.verifierAddress,
         );
-        await this.nodeExitWithSignature(
-          Web3Service.pubicKeyAddress,
-          Web3Service.privateKey,
-          verifierSignature,
-          Web3Service.verifierAddress,
-        );
+        if (Web3Service.privateKey) {
+          await this.nodeExitWithSignature(
+            Web3Service.pubicKeyAddress,
+            Web3Service.privateKey,
+            verifierSignature,
+            Web3Service.verifierAddress,
+          );
+        }
       }
     } catch (error) {
       console.log(error);
