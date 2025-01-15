@@ -1,12 +1,8 @@
 # Project Documentation
 
-This README provides instructions on how to set up and run Openpad Node in 2 concepts: Node Operator and Node Deployment.
-
-- In case of Node Operator, Node Owner setup private key of NFT Owner Address on VPS. All operations are executed on VPS.
-- In another way, Node Deployment is usually a service offered by NAAS Platforms (Node As A Service) to deploy Node to users. Users activate and operate Node through UI of Platform.
+This README provides instructions on how to set up and run Openpad Node as a Node Operator
 
 Document Structure:
-
 - [Hardware Requirement](#hardware-requirements)
 - [Software Installation](#setup-nodejs)
 - [Node Operator Guide](#node-operator-guide)
