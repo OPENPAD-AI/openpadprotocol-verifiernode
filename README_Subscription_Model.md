@@ -79,8 +79,6 @@ $ npm -v
 
 These commands should output the installed versions of Node.js and npm.
 
----
-
 #### API Endpoints
 
 The `Makefile` provides predefined commands to call specific API endpoints.
