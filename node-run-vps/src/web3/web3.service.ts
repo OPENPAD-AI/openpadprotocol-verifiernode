@@ -15,6 +15,7 @@ export class Web3Service {
   public static claimer = '';
   public static commission = 5;
   public static privateKey = '';
+  public static privateKeyVerifierAddress = '';
   public static pubicKeyAddress = '';
   public static verifierAddress = '';
   public static nodeType = 'Solo Operator';
@@ -31,6 +32,9 @@ export class Web3Service {
       +this.configService.get<string>('COMMISSION_RATE') || 5;
 
     Web3Service.privateKey = this.configService.get<string>('PRIVATE_KEY');
+    Web3Service.privateKeyVerifierAddress = this.configService.get<string>(
+      'PRIVATE_KEY_VERIFIER',
+    );
     if (this.configService.get<string>('PUBLIC_KEY')) {
       Web3Service.pubicKeyAddress = this.configService
         .get<string>('PUBLIC_KEY')
@@ -53,6 +57,11 @@ export class Web3Service {
     console.log('- commission: ', Web3Service.commission);
     console.log('- pubicKeyAddress: ', Web3Service.pubicKeyAddress);
     console.log('- verifierAddress: ', Web3Service.verifierAddress);
+    console.log(
+      '- privateKeyVerifierAddress: ',
+      Web3Service.privateKeyVerifierAddress,
+    );
+
     console.log('- nodeType: ', Web3Service.nodeType);
 
     return {
@@ -139,10 +148,10 @@ export class Web3Service {
         if (Web3Service.verifierAddress) {
           const nftIds = nfts.map((item) => item.tokenId);
 
-          // const verifierSignature = await this.getVerifierSignatureNodeEnter(
-          //   Web3Service.verifierAddress,
-          // );
-          const verifierSignature = await this.genNodeEnterWithSignature();
+          const verifierSignature = await this.getVerifierSignatureNodeEnter(
+            Web3Service.verifierAddress,
+          );
+          // const verifierSignature = await this.genNodeEnterWithSignature();
 
           if (!verifierSignature) {
             console.log(
@@ -432,10 +441,10 @@ export class Web3Service {
     try {
       console.log('Web3Service.verifierAddress', Web3Service.verifierAddress);
       if (Web3Service.verifierAddress) {
-        // const verifierSignature = await this.getVerifierSignatureNodeExit(
-        //   Web3Service.verifierAddress,
-        // );
-        const verifierSignature = await this.genNodeExitWithSignature();
+        const verifierSignature = await this.getVerifierSignatureNodeExit(
+          Web3Service.verifierAddress,
+        );
+        // const verifierSignature = await this.genNodeExitWithSignature();
         if (Web3Service.privateKey) {
           await this.nodeExitWithSignature(
             Web3Service.pubicKeyAddress,
@@ -694,7 +703,7 @@ export class Web3Service {
   async genNodeEnterWithSignature() {
     try {
       const expiredAt = Math.floor(Date.now() / 1000) + 60 * 60;
-      const charlie = new ethers.Wallet(Web3Service.privateKey);
+      const charlie = new ethers.Wallet(Web3Service.privateKeyVerifierAddress);
       //ChainID.BASE_SEPOLIA_TESTNET = 84532
       //ChainID.ARBITRUM_MAINNET = 42161
       const chainId = process.env.NETWORK_ARBITRUM ? 84532 : 42161;
@@ -715,7 +724,7 @@ export class Web3Service {
     try {
       const expiredAt = Math.floor(Date.now() / 1000) + 60 * 60;
 
-      const charlie = new ethers.Wallet(Web3Service.privateKey);
+      const charlie = new ethers.Wallet(Web3Service.privateKeyVerifierAddress);
 
       const chainId = process.env.NETWORK_ARBITRUM ? 84532 : 42161;
       const signature = await VerificationUtils.signNodeExit(
