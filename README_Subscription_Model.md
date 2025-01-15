@@ -68,6 +68,7 @@ For the latest version (v21 or higher), use the following steps:
    $ node -v
    ```
 
+
 ### Verify Installation
 
 After installation, verify that Node.js and npm (Node Package Manager) are installed correctly:
@@ -79,11 +80,11 @@ $ npm -v
 
 These commands should output the installed versions of Node.js and npm.
 
-#### API Endpoints
+### API Endpoints
 
 The `Makefile` provides predefined commands to call specific API endpoints.
 
-#### Base API URL
+### Base API URL
 
 The base URL for the API is defined in the `Makefile`:
 
@@ -102,7 +103,7 @@ http://localhost:5000/api
 - **Get verifier signature node exit**: `/get-verifier-signature-node-exit`
 - **Get my nfts**: `/get-my-nfts`
 
-#### Call API Commands
+### Call API Commands
 
 To call an API endpoint, use one of the following commands:
 
@@ -147,7 +148,7 @@ To call an API endpoint, use one of the following commands:
   $ make call-my-nfts
   ```
 
-### Makefile Commands
+## Makefile Commands
 
 Here’s a summary of the `Makefile` commands:
 
@@ -166,7 +167,7 @@ Here’s a summary of the `Makefile` commands:
 | `make call-my-nfts`          | Call my nfts                                |
 
 
-### Notes
+## Notes
 
 - Make sure the environment variables in `.env` are configured correctly before starting the project.
 - The `Makefile` commands assume that the API endpoints are available on the base URL `http://localhost:5000/api`.
