@@ -265,4 +265,4 @@ In case of using your Verifier Address, please register with us.
 - For stop node: Call function "nodeExitWithSignature".
 - undelegate NFT: call function 'undelegate'
 
-For further assistance, please refer to the project documentation or contact the development team.
+For further assistance, please refer to project documentation or contact development team.
