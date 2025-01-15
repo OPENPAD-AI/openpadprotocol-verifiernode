@@ -1,8 +1,11 @@
 # Project Documentation
 
 This README provides instructions on how to set up and run Openpad Node as a Node Operator
+
 License Key Holder run a Node to become a Node Operator and other user can delegate NFT Key to that Node
+
 Document Structure:
+
 - [Hardware Requirement](#hardware-requirements)
 - [Software Installation](#setup-nodejs)
 - [Node Operator Guide](#node-operator-guide)
