@@ -1,9 +1,8 @@
 # Subscription Model Documentation
 
-This README provides instructions on how to set up and run Openpad Node in 2 concepts: Node Operator and Node Deployment.
+This README provides instructions on how to set up and run Openpad Node in Subscription Model
 
-- In case of Node Operator, Node Owner setup private key of NFT Owner Address on VPS. All operations are executed on VPS.
-- In another way, Node Deployment is usually a service offered by NAAS Platforms (Node As A Service) to deploy Node to users. Users activate and operate Node through UI of Platform.
+NAAS Platforms (Node As A Service) deploy Node for users, users own this Node. Users activate and operate Node through UI of Platform.
 
 Document Structure:
 
