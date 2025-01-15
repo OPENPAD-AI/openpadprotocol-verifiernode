@@ -10,8 +10,6 @@ Document Structure:
 - [Software Installation](#setup-nodejs)
 - [NAAS Platform Integration](#node-deployment-integration)
 
----
-
 ## Hardware Requirements
 
 ### Minimum:
@@ -25,8 +23,6 @@ Document Structure:
 - Fast CPU with 2+ cores
 - 4GB+ RAM
 - 8+ MBit/sec download Internet service
-
----
 
 ## Setup Node.js
 
@@ -153,8 +149,6 @@ To call an API endpoint, use one of the following commands:
   $ make call-my-nfts
   ```
 
----
-
 ### Makefile Commands
 
 Here’s a summary of the `Makefile` commands:
@@ -173,7 +167,6 @@ Here’s a summary of the `Makefile` commands:
 | `make call-undelegate`       | Call the Undelegate                         |
 | `make call-my-nfts`          | Call my nfts                                |
 
----
 
 ### Notes
 
@@ -189,8 +182,6 @@ For NAAS that provide Subcription Model, where users manually sign transaction t
 - When launch, FE needs to post NFT Owner Address. Through that, BE call API end point **MY_NFT_ENDPOINT=/get-my-nfts** to get list of NFTs and Verifier Address according to each NFT Token ID.
 - When start node, user select NFT to activate Node. FE use corresponding Verifier Address. Then, FE calls 2 functions on Smart Contract: delegate NFT to Verfier Address and activate node with that Verifier Address.
 - For each user operation on the Node on onchain, it is necessary to use API endpoint **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call the contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
-
----
 
 ### Support interaction with Smart Contract (React)
 
