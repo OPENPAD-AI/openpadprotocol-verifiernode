@@ -1,4 +1,4 @@
-# Project Documentation
+# Subscription Model Documentation
 
 This README provides instructions on how to set up and run Openpad Node in 2 concepts: Node Operator and Node Deployment.
 
