@@ -10,7 +10,6 @@ Document Structure:
 - [Hardware Requirement](#hardware-requirements)
 - [Software Installation](#setup-nodejs)
 - [Node Operator Guide](#node-operator-guide)
-- [Node Deployment Integration](#node-deployment-integration)
 
 ---
 
@@ -260,15 +259,3 @@ Here’s a summary of the `Makefile` commands:
 - The `Makefile` commands assume that the API endpoints are available on the base URL `http://localhost:5000/api`.
 
 For further assistance, please refer to the project documentation or contact the development team.
-
-## Node Deployment Integration
-
-For NAAS that provide Node Deployment Service, where users manually sign transaction to Blockhain Network without through this source.
-
-- When launch, FE needs to post NFT Owner Address. Through that, BE call API end point **MY_NFT_ENDPOINT=/get-my-nfts** to get list of NFTs and Verifier Address according to each NFT Token ID.
-- When start node, user select NFT to activate Node. FE use corresponding Verifier Address. Then, FE calls 2 functions on Smart Contract: delegate NFT to Verfier Address and activate node with that Verifier Address.
-- For each user operation on the Node on onchain, it is necessary to use API endpoint **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call the contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
-
-### Support interaction with Smart Contract (React)
-
-For detailed instructions on start, stop, delegate and revoke delegate on verifier node with ReactJS, please see detail documentation in example folder.
