@@ -134,7 +134,7 @@ export class Web3Service {
   }
   async onNodeSetup() {
     await this.getConfig();
-    if (Web3Service.verifierAddress) {
+    if (Web3Service.verifierAddress || Web3Service.privateKeyVerifierAddress) {
       await this.setupNode();
     }
   }
@@ -655,11 +655,17 @@ export class Web3Service {
 
   async setupNode() {
     try {
+      let verifier = Web3Service.verifierAddress || '';
+      if (Web3Service.privateKeyVerifierAddress) {
+        verifier = this.web3.eth.accounts.privateKeyToAccount(
+          '0x' + Web3Service.privateKeyVerifierAddress,
+        ).address;
+      }
       const response = await axios.post(
         `${process.env.URL_API_OPENPAD}/node-ai-vps/create-setup`,
         {
           userAddress: Web3Service.pubicKeyAddress,
-          verifier: Web3Service.verifierAddress,
+          verifier: verifier.toLocaleLowerCase(),
           claimmer: Web3Service.claimer || Web3Service.pubicKeyAddress,
           commisstionRate: Web3Service.commission,
           type: Web3Service.nodeType,
