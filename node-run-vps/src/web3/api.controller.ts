@@ -1,5 +1,14 @@
-import { Controller, forwardRef, Get, Inject } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  forwardRef,
+  Get,
+  Inject,
+  Put,
+  Req,
+} from '@nestjs/common';
 import { Web3Service } from './web3.service';
+import { UpdateOperaterAdddressDto } from './web3.dto';
 
 @Controller('api')
 export class ApiController {
@@ -65,5 +74,16 @@ export class ApiController {
   @Get('get-my-nfts')
   async getNodeInfos() {
     return await this.web3Service.getMyNfts();
+  }
+
+  @Put('/update-operater-address')
+  async updateOperaterAdddress(
+    @Req() req,
+    @Body() updateOperaterAdddressDto: UpdateOperaterAdddressDto,
+  ) {
+    const data = await this.web3Service.updateOperaterAdddress(
+      updateOperaterAdddressDto,
+    );
+    return data;
   }
 }

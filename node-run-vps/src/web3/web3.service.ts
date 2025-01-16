@@ -6,6 +6,7 @@ import { Cron } from '@nestjs/schedule';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { VerificationUtils } from 'src/utils/verificationUtils';
+import { UpdateOperaterAdddressDto } from './web3.dto';
 
 @Injectable()
 export class Web3Service {
@@ -190,6 +191,7 @@ export class Web3Service {
       : null;
 
     let nfts = await this.getNft(Web3Service.pubicKeyAddress);
+    if (nfts.length == 0) return [];
     const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
     const sortedArray = filteredArray.sort((a, b) => b.tier - a.tier);
@@ -649,7 +651,7 @@ export class Web3Service {
       return response.data;
     } catch (error) {
       this.logger.error(error);
-      return null;
+      return [];
     }
   }
 
@@ -745,5 +747,15 @@ export class Web3Service {
       console.error('Error message:', error.message);
       return error;
     }
+  }
+
+  async updateOperaterAdddress(
+    updateOperaterAdddressDto: UpdateOperaterAdddressDto,
+  ) {
+    const response = await axios.put(
+      `${process.env.URL_API_OPENPAD}/node-ai-vps/update-operater-address`,
+      updateOperaterAdddressDto,
+    );
+    return response.data;
   }
 }

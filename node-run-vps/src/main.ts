@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'error', 'warn', 'debug', 'verbose'], // Enable all log levels
   });
+  app.useGlobalPipes(new ValidationPipe());
+
   app.enableShutdownHooks();
   process.on('SIGTERM', async () => {
     console.log('Received SIGTERM. Gracefully shutting down...');
