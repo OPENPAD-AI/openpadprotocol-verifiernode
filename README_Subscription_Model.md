@@ -183,7 +183,7 @@ For NAAS that provide Subcription Model, where users manually sign transaction t
 
 Note:
 - In case developer wants to use Platform's Verifier Address (instead of Openpad's Verifier Address).
-- It is necessary to call API end point update-operater-address and update Verifier Address to Openpad.
+- After fetch User's NFT and before start node, developer call API end point update-operater-address and update Verifier Address to Openpad. 
 - This API requires an API Key, please contact us to get API Key.
 
 ### Support interaction with Smart Contract (React)
