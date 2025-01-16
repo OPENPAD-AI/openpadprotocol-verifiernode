@@ -182,8 +182,27 @@ For NAAS that provide Subcription Model, where users manually sign transaction t
 - For onchain transaction, it is necessary to use API endpoint **get-verifier-nft-signature-node-enter** and **get-verifier-nft-signature-node-exit** to retrieve the signature. Then, use these signatures to call Smart Contract functions **delegate**, **nodeEnterWithSignature** and **nodeExitWithSignature**.
 
 Note
+
 - In case developer wants to use Platform's Verifier Address (instead of Openpad's Verifier Address).
-- After fetch User's NFT and before start node, developer call API end point update-operater-address and update Verifier Address to Openpad. 
+- After fetch User's NFT and before start node, developer call API end point **PUT - https://api.openpad.io/api/node-ai-vps/update-operater-address**
+  and update Verifier Address to Openpad.
+- **Update Operator Address**:
+
+  ```bash
+  $ curl -X PUT \
+    https://api.openpad.io/api/node-ai-vps/update-operater-address \
+    -H 'Content-Type: application/json' \
+    -H 'Authorization: Bearer YOUR_BEARER_TOKEN' \
+    -d '{
+    "nfts": [
+        {
+            "tokenId": "1",
+            "tokenAddress": "yourTokenUpdate",
+        }
+    ]
+  }'
+  ```
+
 - This API requires an API Key, please contact us to get API Key.
 
 ### Support interaction with Smart Contract (React)
