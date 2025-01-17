@@ -148,7 +148,6 @@ export class Web3Service {
       if (nfts && nfts.length > 0) {
         if (Web3Service.verifierAddress) {
           const nftIds = nfts.map((item) => item.tokenId);
-
           const verifierSignature = await this.getVerifierSignatureNodeEnter(
             Web3Service.verifierAddress,
           );
@@ -174,6 +173,41 @@ export class Web3Service {
           this.logger.warn(
             '- Verifier address not provided. Skipping nodeEnter.',
           );
+          // const nftIds = nfts.map((item) => item.tokenId);
+
+          // const verifierSignature = await this.genNodeEnterWithSignature();
+
+          // if (!verifierSignature) {
+          //   console.log(
+          //     '- Verifier Signature Not Found ',
+          //     Web3Service.verifierAddress,
+          //   );
+          //   return true;
+          // }
+          // if (Web3Service.privateKeyVerifierAddress) {
+          //   console.log(
+          //     'Web3Service.pubicKeyAddress',
+          //     Web3Service.pubicKeyAddress,
+          //   );
+          //   console.log(
+          //     'Web3Service.privateKeyVerifierAddres',
+          //     Web3Service.privateKeyVerifierAddress,
+          //   );
+          //   console.log('verifierSignature', verifierSignature);
+          //   console.log(
+          //     'Web3Service.verifierAddress',
+          //     Web3Service.verifierAddress,
+          //   );
+          //   console.log('nftIds', nftIds);
+
+          //   await this.nodeEnterWithSignature(
+          //     Web3Service.pubicKeyAddress,
+          //     Web3Service.privateKeyVerifierAddress,
+          //     verifierSignature,
+          //     Web3Service.verifierAddress,
+          //     nftIds,
+          //   );
+          // }
         }
       } else {
         this.logger.warn('- No valid NFTs found, Skipping nodeEnter.');
@@ -442,6 +476,11 @@ export class Web3Service {
   async nodeExit() {
     try {
       console.log('Web3Service.verifierAddress', Web3Service.verifierAddress);
+      // console.log(
+      //   'Web3Service.verifierAddress111',
+      //   Web3Service.verifierAddress,
+      // );
+
       if (Web3Service.verifierAddress) {
         const verifierSignature = await this.getVerifierSignatureNodeExit(
           Web3Service.verifierAddress,
@@ -456,6 +495,17 @@ export class Web3Service {
           );
         }
       }
+      // if (Web3Service.privateKeyVerifierAddress) {
+      //   const verifierSignature = await this.genNodeExitWithSignature();
+      //   if (verifierSignature) {
+      //     await this.nodeExitWithSignature(
+      //       Web3Service.pubicKeyAddress,
+      //       Web3Service.privateKeyVerifierAddress,
+      //       verifierSignature,
+      //       Web3Service.verifierAddress,
+      //     );
+      //   }
+      // }
     } catch (error) {
       console.log(error);
       throw error;
@@ -576,22 +626,23 @@ export class Web3Service {
       let nftMax = this.configService.get<string>('NFT_MAX')
         ? +this.configService.get<string>('NFT_MAX')
         : null;
+      console.log('userAddress', userAddress);
 
       let nfts = await this.getNft(userAddress);
-
+      console.log('nfts', nfts);
       const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
       const maxTierItem = filteredArray.reduce((maxItem, currentItem) => {
         return currentItem.tier > maxItem.tier ? currentItem : maxItem;
       }, filteredArray[0]);
 
-      if (nftMax !== null && nftMax > 0) {
-        nfts = filteredArray.slice(0, nftMax);
-      } else {
-        nfts = filteredArray;
-      }
+      // if (nftMax !== null && nftMax > 0) {
+      //   nfts = filteredArray.slice(0, nftMax);
+      // } else {
+      //   nfts = filteredArray;
+      // }
 
-      const tokenAddress = maxTierItem.tokenAddress;
+      const tokenAddress = maxTierItem?.tokenAddress || null;
       return tokenAddress;
     } catch (error) {
       this.logger.error(error);
@@ -663,6 +714,9 @@ export class Web3Service {
           '0x' + Web3Service.privateKeyVerifierAddress,
         ).address;
       }
+      console.log('URL_API_OPENPAD', process.env.URL_API_OPENPAD);
+      console.log('verifier', verifier);
+
       const response = await axios.post(
         `${process.env.URL_API_OPENPAD}/node-ai-vps/create-setup`,
         {
@@ -714,7 +768,8 @@ export class Web3Service {
       const charlie = new ethers.Wallet(Web3Service.privateKeyVerifierAddress);
       //ChainID.BASE_SEPOLIA_TESTNET = 84532
       //ChainID.ARBITRUM_MAINNET = 42161
-      const chainId = process.env.NETWORK_ARBITRUM ? 84532 : 42161;
+      const chainId =
+        process.env.NETWORK_ARBITRUM == 'production' ? 42161 : 84532;
       const signature = await VerificationUtils.signNodeEnter(
         charlie,
         chainId,
@@ -734,11 +789,12 @@ export class Web3Service {
 
       const charlie = new ethers.Wallet(Web3Service.privateKeyVerifierAddress);
 
-      const chainId = process.env.NETWORK_ARBITRUM ? 84532 : 42161;
+      const chainId =
+        process.env.NETWORK_ARBITRUM == 'production' ? 42161 : 84532;
+
       const signature = await VerificationUtils.signNodeExit(
         charlie,
         chainId,
-
         expiredAt,
       );
 
