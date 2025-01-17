@@ -179,7 +179,7 @@ For NAAS that provide Subcription Model, where users manually sign transaction t
 - When deploying node, developer need to declare Public Key of NFT Owner Address
 - When user request to deploy a Node, developer call API end point **MY_NFT_ENDPOINT=/get-my-nfts** to get list of NFTs of user and Verifier Address according to each NFT Token ID.
 - When start node, user select NFT to activate node. FE use corresponding Verifier Address. Then, FE calls 2 functions on Smart Contract: delegate NFT to Verfier Address and activate node with that Verifier Address.
-- For onchain transaction, it is necessary to use API endpoint **get-verifier-nft-signature-node-enter** and **get-verifier-nft-signature-node-exit** to retrieve the signature. Then, use these signatures to call Smart Contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
+- For onchain transaction, it is necessary to use API endpoint **get-verifier-signature-node-enter** and **get-verifier-signature-node-exit** to retrieve the signature. Then, use these signatures to call Smart Contract functions **nodeEnterWithSignature** and **nodeExitWithSignature**.
 
 Note
 
