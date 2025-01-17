@@ -475,13 +475,16 @@ export class Web3Service {
   }
   async nodeExit() {
     try {
-      console.log('Web3Service.verifierAddress', Web3Service.verifierAddress);
+      const verifierAddress = await this.getVerifierAddress(
+        this.configService.get<string>('PUBLIC_KEY'),
+      );
+      console.log('Web3Service.verifierAddress', verifierAddress);
       // console.log(
       //   'Web3Service.verifierAddress111',
       //   Web3Service.verifierAddress,
       // );
 
-      if (Web3Service.verifierAddress) {
+      if (verifierAddress) {
         const verifierSignature = await this.getVerifierSignatureNodeExit(
           Web3Service.verifierAddress,
         );
@@ -623,24 +626,21 @@ export class Web3Service {
 
   async getVerifierByAddress(userAddress: string) {
     try {
-      let nftMax = this.configService.get<string>('NFT_MAX')
+      const nftMax = this.configService.get<string>('NFT_MAX')
         ? +this.configService.get<string>('NFT_MAX')
         : null;
-      console.log('userAddress', userAddress);
 
       let nfts = await this.getNft(userAddress);
-      console.log('nfts', nfts);
       const filteredArray = nfts.filter((item) => item.isDelegated === false);
 
-      const maxTierItem = filteredArray.reduce((maxItem, currentItem) => {
+      if (nftMax !== null && nftMax > 0) {
+        nfts = filteredArray.slice(0, nftMax);
+      } else {
+        nfts = filteredArray;
+      }
+      const maxTierItem = nfts.reduce((maxItem, currentItem) => {
         return currentItem.tier > maxItem.tier ? currentItem : maxItem;
-      }, filteredArray[0]);
-
-      // if (nftMax !== null && nftMax > 0) {
-      //   nfts = filteredArray.slice(0, nftMax);
-      // } else {
-      //   nfts = filteredArray;
-      // }
+      }, nfts[0]);
 
       const tokenAddress = maxTierItem?.tokenAddress || null;
       return tokenAddress;
