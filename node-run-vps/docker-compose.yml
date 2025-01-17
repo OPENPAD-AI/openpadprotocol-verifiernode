@@ -10,8 +10,11 @@ services:
       - '5000:5000'
     environment:
       NODE_ENV: production
-      PRIVATE_KEY: ''
-      CLAIMER_ADDRESS: ''
+      PUBLIC_KEY:
+      PRIVATE_KEY:
+      PRIVATE_KEY_VERIFIER:
+      NFT_MAX:
+      CLAIMER_ADDRESS:
       COMMISSION_RATE: 10
       URL_API_OPENPAD: https://api.openpad.io/api
       ADDRESS_ARBITRUM_SMC_OPERATION: '0x219b8EcFF60FEa781FbD8714503f1fE72325Ca9D'
