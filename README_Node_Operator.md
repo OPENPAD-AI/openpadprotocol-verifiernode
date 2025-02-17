@@ -108,7 +108,7 @@ Copy the example environment variable file and configure it:
 # PRIVATE_KEY=
 # CLAIMER_ADDRESS=
 # COMMISSION_RATE=
-# NODE_TYPE="Solo_Operator" || "Node Ops" || "Easy Node"
+# NODE_TYPE="Solo_Operator" || "Node Ops" || "Easy Node" || "Rapid Node"
 $ cp .env.example .env
 ```
 
@@ -258,6 +258,7 @@ Here’s a summary of the `Makefile` commands:
 - The `Makefile` commands assume that the API endpoints are available on the base URL `http://localhost:5000/api`.
 
 In case of using your Verifier Address, please register with us. And then, follow guide bellow:
+
 - Setup Private Key of your Verifier Address on env
 - Before starting node, you need to call API "/get-my-nfts" to get list of NFT and Verifier Address that you have registed
 - When starting node and stopping node, you need to call API "/get-verifier-signature-node-enter" || "/get-verifier-signature-node-exit" to get signature and then call functions
